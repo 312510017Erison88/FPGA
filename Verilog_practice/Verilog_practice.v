@@ -104,7 +104,7 @@ endmodule
 module mux2_1_df(a, b, select, out);
     input a, b select;
     output out;
-    assign out = select ? a : b;
+    assign out = select ? a : b;        // select = 1, out = a ; select = 0, out = b
 endmodule
 
 // behavior description of the 4-1 line multiplexer
