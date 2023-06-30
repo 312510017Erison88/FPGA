@@ -110,8 +110,8 @@ endmodule
 // behavior description of the 4-1 line multiplexer
 module mux4_1bh(i0, i1, i2, i3, select, y);
     input i0, i1, i2, i3;
-    input [1:0] select;
-    output y;
+    input [1:0] select;                 // input 只能接線不能宣告成暫存器
+    output y;                           // output 可以宣告成接線或暫存器
     reg y;
     always @ (i0 or i1 or i2 or i3 or select)
     case (select)
