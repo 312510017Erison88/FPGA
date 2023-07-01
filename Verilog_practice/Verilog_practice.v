@@ -20,7 +20,8 @@ endmodule
 
 // Stimulus for simple circuit
 module stimcrct;
-initial begin
+initial 
+begin
     a = 1'b0; b = 1'b0; c = 1'b0;
     #100
     a = 1'b1; b = 1'b1; c = 1'b1;
@@ -128,8 +129,8 @@ module testmux;
     reg ta, tb, ts;
     wire y;
     mux2x1_df mx(ta, tb, ts, y);
-        initial
-        begin 
+        initial                         // 區塊內的輸出資料(等號左邊)，用reg來宣告 ; 通常用於測試波型和電路驗證
+        begin                           // 多行敘述就需要使用 begin end
             ts = 1; ta = 0; tb = 1;
             #10 ta = 1; tb = 0;
             #10 ts = 0
