@@ -130,7 +130,7 @@ module testmux;
     wire y;
     mux2x1_df mx(ta, tb, ts, y);
         initial                         // 區塊內的輸出資料(等號左邊)，用reg來宣告 ; 通常用於測試波型和電路驗證
-        begin                           // 多行敘述就需要使用 begin end
+        begin                           // 多行敘述就需要使用 begin end ; begin end 內的敘述就會依序執行
             ts = 1; ta = 0; tb = 1;
             #10 ta = 1; tb = 0;
             #10 ts = 0
