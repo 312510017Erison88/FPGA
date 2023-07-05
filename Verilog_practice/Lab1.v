@@ -1,5 +1,4 @@
-// full adder implementation
-module Lab1(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
+module simple(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
     input[3:0] a, b;
 	 input Cin;
 	 input [17:0] SW;
@@ -24,8 +23,7 @@ module Lab1(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
     assign {co[2], sum[3]} = cs[2] + s[3] + co[1];
     assign {sum[5], sum[4]} = cs[3] + co[2];
 	 
-	 
-	 
+	 initial begin 
 	 assign SW[0] = a[0];
 	 assign SW[1] = a[1];
 	 assign SW[2] = a[2];
@@ -35,7 +33,8 @@ module Lab1(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
 	 assign SW[6] = b[2];
 	 assign SW[7] = b[3];
 	 assign SW[8] = Cin;
-	 default SW <= 4'b0000;
+	 assign SW[17:9] = 9'b000000000;
+	 
 	 
 	 assign LEDR[0] = sum[0];
 	 assign LEDR[1] = sum[1];
@@ -43,7 +42,8 @@ module Lab1(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
 	 assign LEDR[3] = sum[3];
 	 assign LEDR[4] = sum[4];
 	 assign LEDR[5] = sum[5];
-	 default LEDR <= 6'b000000;
+	 assign LEDR[17:6] = 12'b000000000000;
+	 end
 	 
 	 
 	 /*
