@@ -20,58 +20,6 @@ end
 endmodule
 
 
-module full_adder(a, b, Cin, SW, sum, Cout, LEDR, seg0, seg1, seg2);
-    input[3:0] a, b;
-	input Cin; 
-    input [17:0] SW;
-    output [3:0] sum;
-    output Cout;
-	output [17:0] LEDR;
-	output [6:0] seg0, seg1, seg2;
-	 
-    reg [3:0] s, cs;
-    wire [2:0] co;
-    reg [3:0] sum;         // 可不用宣告
-	 
-    always@(a or b or Cin)
-    begin
-        {cs[0], s[0]} = a[0] + b[0] + Cin;
-        {cs[1], s[1]} = a[1] + b[1]; 
-        {cs[2], s[2]} = a[2] + b[2]; 
-        {cs[3], s[3]} = a[3] + b[3];
-    end
-    assign sum[0] = s[0];
-    assign {co[0], sum[1]} = cs[0] + s[1];
-    assign {co[1], sum[2]} = cs[1] + s[2] + co[0];
-    assign {co[2], sum[3]} = cs[2] + s[3] + co[1];
-    assign {Cout, sum[4]} = cs[3] + co[2];
-	 
-	initial 
-    begin
-        assign a[0] = SW[0];
-        assign a[1] = SW[1];
-        assign a[2] = SW[2];
-        assign a[3] = SW[3];
-
-        assign b[0] = SW[4];
-        assign b[1] = SW[5];
-        assign b[2] = SW[6];
-        assign b[3] = SW[7];
-        assign SW[17:9] = 9'b000000000;
-	 
-        assign LEDR[0] = sum[0];
-        assign LEDR[1] = sum[1];
-        assign LEDR[2] = sum[2];
-        assign LEDR[3] = sum[3];
-        assign LEDR[4] = sum[4];
-        assign LEDR[5] = sum[5];
-        assign LEDR[17:6] = 12'b000000000000; 
-	end
-    //seven_seg s0(.in(a), .seg(seg0));
-    //seven_seg s1(.in(b), .seg(seg1));
-    //seven_seg s2(.in(sum), .seg(seg2));
-endmodule
-
 // correct one!
 module full_adder(SW, LEDR);
 	
@@ -98,7 +46,11 @@ module full_adder(SW, LEDR);
 		 {Cout, sum[3]} = a[3] + b[3] + co[2];
 	end
 	 
-	assign LEDR[3:0] = sum;
+	assign LEDR[3:0] = SW;
+
+    //seven_seg s0(.in(a), .seg(seg0));
+    //seven_seg s1(.in(b), .seg(seg1));
+    //seven_seg s2(.in(sum), .seg(seg2));
 
 endmodule
 
