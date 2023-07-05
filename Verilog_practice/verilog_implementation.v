@@ -91,3 +91,25 @@ module decorder_2to4(in0, in1, w, x, y, z);
         endcase
     end
 endmodule
+
+// 致能解碼器
+module en_decorder_3to6(en, in, out);
+    input en;
+    input[2:0] in;
+    output[5:0] out;
+
+    reg [5:0] out;
+
+    always @(en or in) begin
+        if(!en) out = 6'b0;
+        else case(in)
+                3'd0: out = 6'b000001;
+                3'd1: out = 6'b000010;
+                3'd2: out = 6'b000100;
+                3'd3: out = 6'b001000;
+                3'd4: out = 6'b010000;
+                3'd5: out = 6'b010000;
+                default: out = 6'b0;
+        endcase
+    end
+endmodule
