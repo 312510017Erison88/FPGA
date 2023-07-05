@@ -1,10 +1,10 @@
 module simple(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
     input[3:0] a, b;
-	 input Cin;
-	 input [17:0] SW;
+	input Cin; 
+    input [17:0] SW;
     output [5:0] sum;
-	 output [17:0] LEDR;
-	 output [3:0] SEVEN_SEGMENT_DIGIT;
+	output [17:0] LEDR;
+	output [3:0] SEVEN_SEGMENT_DIGIT;
 	 
     reg [3:0] s, cs;
     wire [2:0] co;
@@ -23,26 +23,26 @@ module simple(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
     assign {co[2], sum[3]} = cs[2] + s[3] + co[1];
     assign {sum[5], sum[4]} = cs[3] + co[2];
 	 
-	 initial begin 
-	 assign SW[0] = a[0];
-	 assign SW[1] = a[1];
-	 assign SW[2] = a[2];
-	 assign SW[3] = a[3];
-	 assign SW[4] = b[0];
-	 assign SW[5] = b[1];
-	 assign SW[6] = b[2];
-	 assign SW[7] = b[3];
-	 assign SW[8] = Cin;
-	 assign SW[17:9] = 9'b000000000;
+	initial begin
+        assign a[0] = SW[0];
+        assign a[1] = SW[1];
+        assign a[2] = SW[2];
+        assign a[3] = SW[3];
+
+        assign b[0] = SW[4];
+        assign b[1] = SW[5];
+        assign b[2] = SW[6];
+        assign b[3] = SW[7];
+        assign SW[17:9] = 9'b000000000;
 	 
+        assign sum[0] = LEDR[0];
+        assign sum[1] = LEDR[1];
+        assign sum[2] = LEDR[2];
+        assign sum[3] = LEDR[3];
+        assign sum[4] = LEDR[4];
+        assign sum[5] = LEDR[5];
+        assign LEDR[17:6] = 12'b000000000000;
 	 
-	 assign LEDR[0] = sum[0];
-	 assign LEDR[1] = sum[1];
-	 assign LEDR[2] = sum[2];
-	 assign LEDR[3] = sum[3];
-	 assign LEDR[4] = sum[4];
-	 assign LEDR[5] = sum[5];
-	 assign LEDR[17:6] = 12'b000000000000;
 	 end
 	 
 	 
