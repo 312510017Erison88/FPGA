@@ -32,7 +32,7 @@ module mux_4to1(a, b, c, d, s0, s1, out);
     output out;
 
     reg out;
-    always@(a or b or c or d or s0 or s1) //can use "always@(*);" too!
+    always@(a or b or c or d or s0 or s1)   //can use "always@(*);" too!
     begin 
         case({s1, s0})
         2'b00: out = a;
@@ -72,4 +72,22 @@ module comparator(a, b, gt, lt, eq);
     assign lt = (a < b);
     assign eq = (a==b);
     */
+endmodule
+
+// Decorder
+module decorder_2to4(in0, in1, w, x, y, z);
+    input in0, in1;
+    output w, x, y, z;
+
+    reg w, x, y, z;
+
+    always@(in0 or in1)
+    begin
+        case({in0, in1})
+            2'b00: {w,x,y,z} = 4'b0001;
+            2'b00: {w,x,y,z} = 4'b0010;
+            2'b00: {w,x,y,z} = 4'b0100;
+            2'b00: {w,x,y,z} = 4'b1000;
+        endcase
+    end
 endmodule
