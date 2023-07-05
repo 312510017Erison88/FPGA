@@ -77,7 +77,7 @@ assign f = (x1 & x2) ( x2 & x3);
 assign LEDG[0] = f;
 endmodule
 
-// chatgpt
+// chatgpt wrong
 module simple(Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
     input Cin; 
     input [17:0] SW;
