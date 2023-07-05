@@ -113,3 +113,23 @@ module en_decorder_3to6(en, in, out);
         endcase
     end
 endmodule
+
+// Encorder
+module encorder_4to2(in0, in1, in2, in3, v, o1, o2);
+    input in0, in1, in2, in3;
+    output v;
+    output o1, o2;
+
+    reg v;
+
+    always@(in0 or in1 or in2 or in3)
+    begin
+        case({in3, in2, in1, in0})
+            4'b0001:{v, o1, o2} = 3'b100;
+            4'b0010:{v, o1, o2} = 3'b101;
+            4'b0100:{v, o1, o2} = 3'b110;
+            4'b1000:{v, o1, o2} = 3'b111;
+            default:{v, o1, o2} = 3'b000;
+        endcase
+    end
+endmodule

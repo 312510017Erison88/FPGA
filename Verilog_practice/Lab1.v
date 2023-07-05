@@ -8,7 +8,7 @@ module simple(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
 	 
     reg [3:0] s, cs;
     wire [2:0] co;
-    wire [5:0] sum;         // 可不用宣告
+    reg [5:0] sum;         // 可不用宣告
 	 
     always@(a or b or Cin)
     begin
@@ -35,29 +35,32 @@ module simple(a, b, Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
         assign b[3] = SW[7];
         assign SW[17:9] = 9'b000000000;
 	 
-        assign sum[0] = LEDR[0];
-        assign sum[1] = LEDR[1];
-        assign sum[2] = LEDR[2];
-        assign sum[3] = LEDR[3];
-        assign sum[4] = LEDR[4];
-        assign sum[5] = LEDR[5];
+        assign LEDR[0] = sum[0];
+        assign LEDR[1] = sum[1];
+        assign LEDR[2] = sum[2];
+        assign LEDR[3] = sum[3];
+        assign LEDR[4] = sum[4];
+        assign LEDR[5] = sum[5];
         assign LEDR[17:6] = 12'b000000000000;
 	 
 	 end
 	 
-	 
 	 /*
-	 assign SEVEN_SEGMENT_DIGIT[0000] = 7'b1000000;
-	 assign SEVEN_SEGMENT_DIGIT[0001] = 7'b1111001;
-	 assign SEVEN_SEGMENT_DIGIT[0010] = 7'b0100100;
-	 assign SEVEN_SEGMENT_DIGIT[0011] = 7'b0110000;
-	 assign SEVEN_SEGMENT_DIGIT[0100] = 7'b0011001;
-	 assign SEVEN_SEGMENT_DIGIT[0101] = 7'b0010010;
-	 assign SEVEN_SEGMENT_DIGIT[0110] = 7'b0000010;
-	 assign SEVEN_SEGMENT_DIGIT[0111] = 7'b1111000;
-	 assign SEVEN_SEGMENT_DIGIT[1000] = 7'b0000000;
-	 assign SEVEN_SEGMENT_DIGIT[1001] = 7'b0010000;
-	 default: SEVEN_SEGMENT_DIGIT <= 7'b1111111; //blank
+	 always @(*) begin
+        case (SW[3:0])
+            4'b0000: SEVEN_SEGMENT_DIGIT = 7'b1000000;
+            4'b0001: SEVEN_SEGMENT_DIGIT = 7'b1111001;
+            4'b0010: SEVEN_SEGMENT_DIGIT = 7'b0100100;
+            4'b0011: SEVEN_SEGMENT_DIGIT = 7'b0110000;
+            4'b0100: SEVEN_SEGMENT_DIGIT = 7'b0011001;
+            4'b0101: SEVEN_SEGMENT_DIGIT = 7'b0010010;
+            4'b0110: SEVEN_SEGMENT_DIGIT = 7'b0000010;
+            4'b0111: SEVEN_SEGMENT_DIGIT = 7'b1111000;
+            4'b1000: SEVEN_SEGMENT_DIGIT = 7'b0000000;
+            4'b1001: SEVEN_SEGMENT_DIGIT = 7'b0010000;
+            default: SEVEN_SEGMENT_DIGIT = 7'b1111111; // blank
+        endcase
+    end
 	 */
 	 
 endmodule
@@ -120,7 +123,7 @@ module simple(Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
     assign LEDR[5] = sum[5];
     assign LEDR[17:6] = 12'b000000000000;
 
-    always @* begin
+    always @(*) begin
         case (SW[3:0])
             4'b0000: SEVEN_SEGMENT_DIGIT = 7'b1000000;
             4'b0001: SEVEN_SEGMENT_DIGIT = 7'b1111001;
