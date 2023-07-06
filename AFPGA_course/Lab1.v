@@ -61,60 +61,6 @@ module full_adder(SW, LEDR);
 endmodule
 
 
-
-
-// chatgpt not correct!
-module full_adder(
-  input [8:0] SW,    // FPGA switches
-  output [9:0] LEDR  // FPGA LEDs
-);
-  wire [3:0] A, B;
-  wire Cin;
-  wire [3:0] sum;
-  wire Cout;
-  wire [1:0] hex_sum, hex_A, hex_B;
-
-  assign A = SW[3:0];
-  assign B = SW[7:4];
-  assign Cin = SW[8];
-
-  assign sum = A + B + Cin;
-  assign Cout = sum[4];
-
-  assign hex_sum = sum[3:2];
-  assign hex_A = A[3:2];
-  assign hex_B = B[3:2];
-
-  always @(*)
-  begin
-    case (hex_sum)
-      2'b00: LEDR[5:4] = 4'b0011;
-      2'b01: LEDR[5:4] = 4'b0001;
-      2'b10: LEDR[5:4] = 4'b0101;
-      2'b11: LEDR[5:4] = 4'b0111;
-      default: LEDR[5:4] = 4'b1111;
-    endcase
-
-    case (hex_A)
-      2'b00: LEDR[3:2] = 4'b0011;
-      2'b01: LEDR[3:2] = 4'b0001;
-      2'b10: LEDR[3:2] = 4'b0101;
-      2'b11: LEDR[3:2] = 4'b0111;
-      default: LEDR[3:2] = 4'b1111;
-    endcase
-
-    case (hex_B)
-      2'b00: LEDR[1:0] = 4'b0011;
-      2'b01: LEDR[1:0] = 4'b0001;
-      2'b10: LEDR[1:0] = 4'b0101;
-      2'b11: LEDR[1:0] = 4'b0111;
-      default: LEDR[1:0] = 4'b1111;
-    endcase
-
-    if (A > 9 || B > 9)
-      LEDR[9] = 1;
-    else
-      LEDR[9] = 0;
-  end
-endmodule
-
+// if-else一定要在always裡面!!
+// always 給值一定要宣告reg 
+// 在always 裡面 ex:if-else只要超過一行 都要加 begin end
