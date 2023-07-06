@@ -1,6 +1,7 @@
 module seven_seg(in, seg);
 input [3:0] in;     // 輸入4_bit
 output [6:0] seg;   // 輸出7_bit
+reg [6:0] seg;   // 輸出7_bit
 always@(in)
 begin
     case(in)
