@@ -61,6 +61,4 @@ module full_adder(SW, LEDR);
 endmodule
 
 
-// if-else一定要在always裡面!!
-// always 給值一定要宣告reg 
-// 在always 裡面 ex:if-else只要超過一行 都要加 begin end
+
