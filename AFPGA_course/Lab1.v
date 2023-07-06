@@ -41,10 +41,15 @@ module full_adder(SW, LEDR);
 	 
 	always@(a or b or Cin)
 	begin
-		 {co[0], sum[0]} = a[0] + b[0] + Cin;
-		 {co[1], sum[1]} = a[1] + b[1] + co[0]; 
-		 {co[2], sum[2]} = a[2] + b[2] + co[1]; 
-		 {Cout, sum[3]} = a[3] + b[3] + co[2];
+		{co[0], sum[0]} = a[0] + b[0] + Cin;
+		{co[1], sum[1]} = a[1] + b[1] + co[0]; 
+		{co[2], sum[2]} = a[2] + b[2] + co[1]; 
+		{Cout, sum[3]} = a[3] + b[3] + co[2];
+    // not sure
+    if (A > 9 || B > 9)
+      LEDR[9] = 1;
+    else
+      LEDR[9] = 0;
 	end
 	 
 	assign LEDR[3:0] = SW;
@@ -57,67 +62,8 @@ endmodule
 
 
 
-// chatgpt wrong
-module simple(Cin, SW, sum, LEDR, SEVEN_SEGMENT_DIGIT);
-    input Cin; 
-    input [17:0] SW;
-    output [5:0] sum;
-    output [17:0] LEDR;
-    output [3:0] SEVEN_SEGMENT_DIGIT;
 
-    reg [3:0] a, b;
-    reg [3:0] s, cs;
-    wire [2:0] co;
-
-    always @* begin
-        {cs[0], s[0]} = a[0] + b[0] + Cin;
-        {cs[1], s[1]} = a[1] + b[1];
-        {cs[2], s[2]} = a[2] + b[2];
-        {cs[3], s[3]} = a[3] + b[3];
-
-        sum[0] = s[0];
-        {co[0], sum[1]} = cs[0] + s[1];
-        {co[1], sum[2]} = cs[1] + s[2] + co[0];
-        {co[2], sum[3]} = cs[2] + s[3] + co[1];
-        {sum[5], sum[4]} = cs[3] + co[2];
-
-        a[0] = SW[0];
-        a[1] = SW[1];
-        a[2] = SW[2];
-        a[3] = SW[3];
-
-        b[0] = SW[4];
-        b[1] = SW[5];
-        b[2] = SW[6];
-        b[3] = SW[7];
-    end
-
-    assign LEDR[0] = sum[0];
-    assign LEDR[1] = sum[1];
-    assign LEDR[2] = sum[2];
-    assign LEDR[3] = sum[3];
-    assign LEDR[4] = sum[4];
-    assign LEDR[5] = sum[5];
-    assign LEDR[17:6] = 12'b000000000000;
-
-    always @(*) begin
-        case (SW[3:0])
-            4'b0000: SEVEN_SEGMENT_DIGIT = 7'b1000000;
-            4'b0001: SEVEN_SEGMENT_DIGIT = 7'b1111001;
-            4'b0010: SEVEN_SEGMENT_DIGIT = 7'b0100100;
-            4'b0011: SEVEN_SEGMENT_DIGIT = 7'b0110000;
-            4'b0100: SEVEN_SEGMENT_DIGIT = 7'b0011001;
-            4'b0101: SEVEN_SEGMENT_DIGIT = 7'b0010010;
-            4'b0110: SEVEN_SEGMENT_DIGIT = 7'b0000010;
-            4'b0111: SEVEN_SEGMENT_DIGIT = 7'b1111000;
-            4'b1000: SEVEN_SEGMENT_DIGIT = 7'b0000000;
-            4'b1001: SEVEN_SEGMENT_DIGIT = 7'b0010000;
-            default: SEVEN_SEGMENT_DIGIT = 7'b1111111; // blank
-        endcase
-    end
-
-endmodule
-
+// chatgpt not correct!
 module full_adder(
   input [8:0] SW,    // FPGA switches
   output [9:0] LEDR  // FPGA LEDs
