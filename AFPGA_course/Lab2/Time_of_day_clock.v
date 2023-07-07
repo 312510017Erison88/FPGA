@@ -44,7 +44,7 @@ module time_of_day_clock(
     end
   end
 
-  always @(hours, minutes, seconds)
+  always@(hours, minutes, seconds)
   begin
     // Display hours on HEX5 and HEX4
     BCD_to_seven_segment_1 display_hours (hours, HEX4, HEX5);
