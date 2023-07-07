@@ -25,15 +25,6 @@ module full_adder(SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 		 temp = {Cout, sum};
 	end
 	 
-	//assign LEDR[8:0] = SW;
-	
-	BCD_to_seven_segment a1 (a, HEX2);
-	BCD_to_seven_segment a2 (10, HEX3);
-	BCD_to_seven_segment b1 (b, HEX0);
-	BCD_to_seven_segment b2 (10, HEX1);
-	BCD_to_seven_segment sum1 (s_out0, HEX4);
-	BCD_to_seven_segment sum2 (s_out1, HEX5);
-	
 	always@(*)
 	begin
 		if(temp <= 9)begin
@@ -46,15 +37,22 @@ module full_adder(SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 			s_out0 = sum + 6;
 		end
 	end
-	 
-	 always@(*)
-	 begin
-		 if (a > 9 || b > 9)
-			LEDR[9] = 1;
-		 else
-			LEDR[9] = 0;
-	 end
-	 
+
+	always@(*)
+	begin
+		if (a > 9 || b > 9)
+		LEDR[9] = 1;
+		else
+		LEDR[9] = 0;
+	end
+	
+	BCD_to_seven_segment a1 (a, HEX2);
+	BCD_to_seven_segment a2 (10, HEX3);
+	BCD_to_seven_segment b1 (b, HEX0);
+	BCD_to_seven_segment b2 (10, HEX1);
+	BCD_to_seven_segment sum1 (s_out0, HEX4);
+	BCD_to_seven_segment sum2 (s_out1, HEX5);
+	
 endmodule
 
 // reminder
