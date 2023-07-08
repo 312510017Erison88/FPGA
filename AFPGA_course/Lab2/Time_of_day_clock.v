@@ -48,6 +48,25 @@ module time_of_day_clock(
     end
   end
 
+/*
+  always @(hours)
+    begin
+      temp_hours_1 = hours / 10;
+      temp_hours_2 = hours % 10;
+    end
+    
+    always @(minutes)
+    begin
+      temp_minutes_1 = minutes / 10;
+      temp_minutes_2 = minutes % 10;
+    end
+    
+    always @(seconds)
+    begin
+      temp_seconds_1 = seconds / 10;
+      temp_seconds_2 = seconds % 10;
+    end
+*/
   // Display hours on HEX5 and HEX4
   BCD_to_seven_segment_1 display_hours (.in(hours), .seg1(HEX4), .seg0(HEX5));
 

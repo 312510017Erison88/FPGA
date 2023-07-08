@@ -1,4 +1,4 @@
-module BCD_to_seven_segment(in, seg);
+module BCD_to_seven_segment_1(in, seg);
 input [3:0] in;
 output reg [6:0] seg;
 always@(in)
