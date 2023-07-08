@@ -12,9 +12,12 @@ module time_of_day_clock(
   reg [5:0] hours;
   reg [5:0] minutes;
   reg [5:0] seconds;
-  // reg [3:0] display_hours;
-  // reg [5:0] display_minutes;
-  // reg [5:0] display_seconds;
+  //reg [3:0] temp_hours_1;
+  //reg [3:0] temp_minutes_1;
+  //reg [3:0] temp_seconds_1;
+  //reg [3:0] temp_hours_2;
+  //reg [3:0] temp_minutes_2;
+  //reg [3:0] temp_seconds_2;
 
   always@(posedge SW[8])
   begin
@@ -45,17 +48,14 @@ module time_of_day_clock(
     end
   end
 
-  always@(hours, minutes, seconds)
-  begin
-    // Display hours on HEX5 and HEX4
-    BCD_to_seven_segment_1 display_hours (hours, HEX4, HEX5);
+  // Display hours on HEX5 and HEX4
+  BCD_to_seven_segment_1 display_hours (.in(hours), .seg1(HEX4), .seg0(HEX5));
 
-    // Display minutes on HEX3 and HEX2
-    BCD_to_seven_segment_1 display_minutes (minutes, HEX3, HEX2);
+  // Display minutes on HEX3 and HEX2
+  BCD_to_seven_segment_1 display_minutes (.in(minutes), .seg1(HEX3), .seg0(HEX2));
 
-    // Display seconds on HEX1 and HEX0
-    BCD_to_seven_segment_1 display_seconds (seconds, HEX1, HEX0);
-  end
+  // Display seconds on HEX1 and HEX0
+  BCD_to_seven_segment_1 display_seconds (.in(seconds), .seg1(HEX1), .seg0(HEX0));
 
 endmodule
 
@@ -65,140 +65,71 @@ input [5:0] in;
 output reg [6:0] seg1, seg0;
 always@(in)
     case(in)
-      0: seg0 = 7'b1000000, seg1 = 7'b1111111;    // 0
-      1: seg0 = 7'b1111001, seg1 = 7'b1111111;    // 1
-      2: seg0 = 7'b0100100, seg1 = 7'b1111111;    // 2
-      3: seg0 = 7'b0110000, seg1 = 7'b1111111;    // 3
-      4: seg0 = 7'b0011001, seg1 = 7'b1111111;    // 4
-      5: seg0 = 7'b0010010, seg1 = 7'b1111111;    // 5
-      6: seg0 = 7'b0000010, seg1 = 7'b1111111;    // 6
-      7: seg0 = 7'b1111000, seg1 = 7'b1111111;    // 7
-      8: seg0 = 7'b0000000, seg1 = 7'b1111111;    // 8
-      9: seg0 = 7'b0010000, seg1 = 7'b1111111;    // 9
-      10: seg0 = 7'b1000000, seg1 = 7'b1111001;    // 0
-      11: seg0 = 7'b1111001, seg1 = 7'b1111001;    // 1
-      12: seg0 = 7'b0100100, seg1 = 7'b1111001;    // 2
-      13: seg0 = 7'b0110000, seg1 = 7'b1111001;    // 3
-      14: seg0 = 7'b0011001, seg1 = 7'b1111001;    // 4
-      15: seg0 = 7'b0010010, seg1 = 7'b1111001;    // 5
-      16: seg0 = 7'b0000010, seg1 = 7'b1111001;    // 6
-      17: seg0 = 7'b1111000, seg1 = 7'b1111001;    // 7
-      18: seg0 = 7'b0000000, seg1 = 7'b1111001;    // 8
-      19: seg0 = 7'b0010000, seg1 = 7'b1111001;    // 9
-      20: seg0 = 7'b1000000, seg1 = 7'b0100100;    // 0
-      21: seg0 = 7'b1111001, seg1 = 7'b0100100;    // 1
-      22: seg0 = 7'b0100100, seg1 = 7'b0100100;    // 2
-      23: seg0 = 7'b0110000, seg1 = 7'b0100100;    // 3
-      24: seg0 = 7'b0011001, seg1 = 7'b0100100;    // 4
-      25: seg0 = 7'b0010010, seg1 = 7'b0100100;    // 5
-      26: seg0 = 7'b0000010, seg1 = 7'b0100100;    // 6
-      27: seg0 = 7'b1111000, seg1 = 7'b0100100;    // 7
-      28: seg0 = 7'b0000000, seg1 = 7'b0100100;    // 8
-      29: seg0 = 7'b0010000, seg1 = 7'b0100100;    // 9
-      30: seg0 = 7'b1000000, seg1 = 7'b0110000;    // 0
-      31: seg0 = 7'b1111001, seg1 = 7'b0110000;    // 1
-      32: seg0 = 7'b0100100, seg1 = 7'b0110000;    // 2
-      33: seg0 = 7'b0110000, seg1 = 7'b0110000;    // 3
-      34: seg0 = 7'b0011001, seg1 = 7'b0110000;    // 4
-      35: seg0 = 7'b0010010, seg1 = 7'b0110000;    // 5
-      36: seg0 = 7'b0000010, seg1 = 7'b0110000;    // 6
-      37: seg0 = 7'b1111000, seg1 = 7'b0110000;    // 7
-      38: seg0 = 7'b0000000, seg1 = 7'b0110000;    // 8
-      39: seg0 = 7'b0010000, seg1 = 7'b0110000;    // 9
-      40: seg0 = 7'b1000000, seg1 = 7'b0011001;    // 0
-      41: seg0 = 7'b1111001, seg1 = 7'b0011001;    // 1
-      42: seg0 = 7'b0100100, seg1 = 7'b0011001;    // 2
-      43: seg0 = 7'b0110000, seg1 = 7'b0011001;    // 3
-      44: seg0 = 7'b0011001, seg1 = 7'b0011001;    // 4
-      45: seg0 = 7'b0010010, seg1 = 7'b0011001;    // 5
-      46: seg0 = 7'b0000010, seg1 = 7'b0011001;    // 6
-      47: seg0 = 7'b1111000, seg1 = 7'b0011001;    // 7
-      48: seg0 = 7'b0000000, seg1 = 7'b0011001;    // 8
-      49: seg0 = 7'b0010000, seg1 = 7'b0011001;    // 9
-      50: seg0 = 7'b1000000, seg1 = 7'b0010010;    // 0
-      51: seg0 = 7'b1111001, seg1 = 7'b0010010;    // 1
-      52: seg0 = 7'b0100100, seg1 = 7'b0010010;    // 2
-      53: seg0 = 7'b0110000, seg1 = 7'b0010010;    // 3
-      54: seg0 = 7'b0011001, seg1 = 7'b0010010;    // 4
-      55: seg0 = 7'b0010010, seg1 = 7'b0010010;    // 5
-      56: seg0 = 7'b0000010, seg1 = 7'b0010010;    // 6
-      57: seg0 = 7'b1111000, seg1 = 7'b0010010;    // 7
-      58: seg0 = 7'b0000000, seg1 = 7'b0010010;    // 8
-      59: seg0 = 7'b0010000, seg1 = 7'b0010010;    // 9
-      default: seg0 = 7'b1111111, seg1 = 7'b1111111;    // blank
+    0: seg0 = 7'b1000000; seg1 = 7'b1111111;    // 0
+    1: seg0 = 7'b1111001; seg1 = 7'b1111111;    // 1
+    2: seg0 = 7'b0100100; seg1 = 7'b1111111;    // 2
+    3: seg0 = 7'b0110000; seg1 = 7'b1111111;    // 3
+    4: seg0 = 7'b0011001; seg1 = 7'b1111111;    // 4
+    5: seg0 = 7'b0010010; seg1 = 7'b1111111;    // 5
+    6: seg0 = 7'b0000010; seg1 = 7'b1111111;    // 6
+    7: seg0 = 7'b1111000; seg1 = 7'b1111111;    // 7
+    8: seg0 = 7'b0000000; seg1 = 7'b1111111;    // 8
+    9: seg0 = 7'b0010000; seg1 = 7'b1111111;    // 9
+    10: seg0 = 7'b1000000; seg1 = 7'b1111001;    // 0
+    11: seg0 = 7'b1111001; seg1 = 7'b1111001;    // 1
+    12: seg0 = 7'b0100100; seg1 = 7'b1111001;    // 2
+    13: seg0 = 7'b0110000; seg1 = 7'b1111001;    // 3
+    14: seg0 = 7'b0011001; seg1 = 7'b1111001;    // 4
+    15: seg0 = 7'b0010010; seg1 = 7'b1111001;    // 5
+    16: seg0 = 7'b0000010; seg1 = 7'b1111001;    // 6
+    17: seg0 = 7'b1111000; seg1 = 7'b1111001;    // 7
+    18: seg0 = 7'b0000000; seg1 = 7'b1111001;    // 8
+    19: seg0 = 7'b0010000; seg1 = 7'b1111001;    // 9
+    20: seg0 = 7'b1000000; seg1 = 7'b0100100;    // 0
+    21: seg0 = 7'b1111001; seg1 = 7'b0100100;    // 1
+    22: seg0 = 7'b0100100; seg1 = 7'b0100100;    // 2
+    23: seg0 = 7'b0110000; seg1 = 7'b0100100;    // 3
+    24: seg0 = 7'b0011001; seg1 = 7'b0100100;    // 4
+    25: seg0 = 7'b0010010; seg1 = 7'b0100100;    // 5
+    26: seg0 = 7'b0000010; seg1 = 7'b0100100;    // 6
+    27: seg0 = 7'b1111000; seg1 = 7'b0100100;    // 7
+    28: seg0 = 7'b0000000; seg1 = 7'b0100100;    // 8
+    29: seg0 = 7'b0010000; seg1 = 7'b0100100;    // 9
+    30: seg0 = 7'b1000000; seg1 = 7'b0110000;    // 0
+    31: seg0 = 7'b1111001; seg1 = 7'b0110000;    // 1
+    32: seg0 = 7'b0100100; seg1 = 7'b0110000;    // 2
+    33: seg0 = 7'b0110000; seg1 = 7'b0110000;    // 3
+    34: seg0 = 7'b0011001; seg1 = 7'b0110000;    // 4
+    35: seg0 = 7'b0010010; seg1 = 7'b0110000;    // 5
+    36: seg0 = 7'b0000010; seg1 = 7'b0110000;    // 6
+    37: seg0 = 7'b1111000; seg1 = 7'b0110000;    // 7
+    38: seg0 = 7'b0000000; seg1 = 7'b0110000;    // 8
+    39: seg0 = 7'b0010000; seg1 = 7'b0110000;    // 9
+    40: seg0 = 7'b1000000; seg1 = 7'b0011001;    // 0
+    41: seg0 = 7'b1111001; seg1 = 7'b0011001;    // 1
+    42: seg0 = 7'b0100100; seg1 = 7'b0011001;    // 2
+    43: seg0 = 7'b0110000; seg1 = 7'b0011001;    // 3
+    44: seg0 = 7'b0011001; seg1 = 7'b0011001;    // 4
+    45: seg0 = 7'b0010010; seg1 = 7'b0011001;    // 5
+    46: seg0 = 7'b0000010; seg1 = 7'b0011001;    // 6
+    47: seg0 = 7'b1111000; seg1 = 7'b0011001;    // 7
+    48: seg0 = 7'b0000000; seg1 = 7'b0011001;    // 8
+    49: seg0 = 7'b0010000; seg1 = 7'b0011001;    // 9
+    50: seg0 = 7'b1000000; seg1 = 7'b0010010;    // 0
+    51: seg0 = 7'b1111001; seg1 = 7'b0010010;    // 1
+    52: seg0 = 7'b0100100; seg1 = 7'b0010010;    // 2
+    53: seg0 = 7'b0110000; seg1 = 7'b0010010;    // 3
+    54: seg0 = 7'b0011001; seg1 = 7'b0010010;    // 4
+    55: seg0 = 7'b0010010; seg1 = 7'b0010010;    // 5
+    56: seg0 = 7'b0000010; seg1 = 7'b0010010;    // 6
+    57: seg0 = 7'b1111000; seg1 = 7'b0010010;    // 7
+    58: seg0 = 7'b0000000; seg1 = 7'b0010010;    // 8
+    59: seg0 = 7'b0010000; seg1 = 7'b0010010;    // 9
+    default: seg0 = 7'b1111111; seg1 = 7'b1111111;    // blank
     endcase
 endmodule 
 
-/*
-module BCD_to_seven_segment_1(in, seg1, seg0);
-input [5:0] in;
-output reg [6:0] seg1, seg0;
-always@(in)
-    case(in)
-      6'b000000: begin seg1 = 7'b1000000; seg0 = 7'b1111111; end // 0
-      6'b000001: begin seg1 = 7'b1111001; seg0 = 7'b1111111; end // 1
-      6'b000010: begin seg1 = 7'b0100100; seg0 = 7'b1111111; end // 2
-      6'b000011: begin seg1 = 7'b0110000; seg0 = 7'b1111111; end // 3
-      6'b000100: begin seg1 = 7'b0011001; seg0 = 7'b1111111; end // 4
-      6'b000101: begin seg1 = 7'b0010010; seg0 = 7'b1111111; end // 5
-      6'b000110: begin seg1 = 7'b0000010; seg0 = 7'b1111111; end // 6
-      6'b000111: begin seg1 = 7'b1111000; seg0 = 7'b1111111; end // 7
-      6'b001000: begin seg1 = 7'b0000000; seg0 = 7'b1111111; end // 8
-      6'b001001: begin seg1 = 7'b0010000; seg0 = 7'b1111111; end // 9
-      6'b001010: begin seg1 = 7'b1000000; seg0 = 7'b1111001; end // 10
-      6'b001011: begin seg1 = 7'b1111001; seg0 = 7'b1111001; end // 11
-      6'b001100: begin seg1 = 7'b0100100; seg0 = 7'b1111001; end // 12
-      6'b001101: begin seg1 = 7'b0110000; seg0 = 7'b1111001; end // 13
-      6'b001110: begin seg1 = 7'b0011001; seg0 = 7'b1111001; end // 14
-      6'b001111: begin seg1 = 7'b0010010; seg0 = 7'b1111001; end // 15
-      6'b010000: begin seg1 = 7'b0000010; seg0 = 7'b1111001; end // 16
-      6'b010001: begin seg1 = 7'b1111000; seg0 = 7'b1111001; end // 17
-      6'b010010: begin seg1 = 7'b0000000; seg0 = 7'b1111001; end // 18
-      6'b010011: begin seg1 = 7'b0010000; seg0 = 7'b1111001; end // 19
-      6'b010100: begin seg1 = 7'b1000000; seg0 = 7'b0100100; end // 20
-      6'b010101: begin seg1 = 7'b1111001; seg0 = 7'b0100100; end // 21
-      6'b010110: begin seg1 = 7'b0100100; seg0 = 7'b0100100; end // 22
-      6'b010111: begin seg1 = 7'b0110000; seg0 = 7'b0100100; end // 23
-      6'b011000: begin seg1 = 7'b0011001; seg0 = 7'b0100100; end // 24
-      6'b011001: begin seg1 = 7'b0010010; seg0 = 7'b0100100; end // 25
-      6'b011010: begin seg1 = 7'b0000010; seg0 = 7'b0100100; end // 26
-      6'b011011: begin seg1 = 7'b1111000; seg0 = 7'b0100100; end // 27
-      6'b011100: begin seg1 = 7'b0000000; seg0 = 7'b0100100; end // 28
-      6'b011101: begin seg1 = 7'b0010000; seg0 = 7'b0100100; end // 29
-      6'b011110: begin seg1 = 7'b1000000; seg0 = 7'b0110000; end // 30
-      6'b011111: begin seg1 = 7'b1111001; seg0 = 7'b0110000; end // 31
-      6'b100000: begin seg1 = 7'b0100100; seg0 = 7'b0110000; end // 32
-      6'b100001: begin seg1 = 7'b0110000; seg0 = 7'b0110000; end // 33
-      6'b100010: begin seg1 = 7'b0011001; seg0 = 7'b0110000; end // 34
-      6'b100011: begin seg1 = 7'b0010010; seg0 = 7'b0110000; end // 35
-      6'b100100: begin seg1 = 7'b0011001; seg0 = 7'b0110000; end // 36
-      6'b100101: begin seg1 = 7'b0010010; seg0 = 7'b0110000; end // 37
-      6'b100110: begin seg1 = 7'b0000010; seg0 = 7'b0110000; end // 38
-      6'b100111: begin seg1 = 7'b1111000; seg0 = 7'b0110000; end // 39
-      6'b101000: begin seg1 = 7'b0000000; seg0 = 7'b0110000; end // 40
-      6'b101001: begin seg1 = 7'b0010000; seg0 = 7'b0110000; end // 41
-      6'b101010: begin seg1 = 7'b1000000; seg0 = 7'b0011001; end // 42
-      6'b101011: begin seg1 = 7'b1111001; seg0 = 7'b0011001; end // 43
-      6'b101100: begin seg1 = 7'b0100100; seg0 = 7'b0011001; end // 44
-      6'b101101: begin seg1 = 7'b0110000; seg0 = 7'b0011001; end // 45
-      6'b101110: begin seg1 = 7'b0011001; seg0 = 7'b0011001; end // 46
-      6'b101111: begin seg1 = 7'b0010010; seg0 = 7'b0011001; end // 47
-      6'b110000: begin seg1 = 7'b0000010; seg0 = 7'b0011001; end // 48
-      6'b110001: begin seg1 = 7'b1111000; seg0 = 7'b0011001; end // 49
-      6'b110010: begin seg1 = 7'b0000000; seg0 = 7'b0011001; end // 50
-      6'b110011: begin seg1 = 7'b0010000; seg0 = 7'b0011001; end // 51
-      6'b110100: begin seg1 = 7'b1000000; seg0 = 7'b0010010; end // 52
-      6'b110101: begin seg1 = 7'b1111001; seg0 = 7'b0010010; end // 53
-      6'b110110: begin seg1 = 7'b0100100; seg0 = 7'b0010010; end // 54
-      6'b110111: begin seg1 = 7'b0110000; seg0 = 7'b0010010; end // 55
-      6'b111000: begin seg1 = 7'b0011001; seg0 = 7'b0010010; end // 56
-      6'b111001: begin seg1 = 7'b0010010; seg0 = 7'b0010010; end // 57
-      6'b111010: begin seg1 = 7'b0000010; seg0 = 7'b0010010; end // 58
-      6'b111011: begin seg1 = 7'b1111000; seg0 = 7'b0010010; end // 59
-      default:   begin seg1 = 7'b1111111; seg0 = 7'b1111111; end // blank
-    endcase
-endmodule
-*/
+
 
 // call module(實例化)要放在always外面 
 // 在同一個always下 temp_hours那些數值不能同時附值
