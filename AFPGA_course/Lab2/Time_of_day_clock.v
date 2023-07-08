@@ -1,5 +1,6 @@
 module time_of_day_clock(
   input [9:0] SW,
+  input clk;
   output reg [6:0] HEX0,
   output reg [6:0] HEX1,
   output reg [6:0] HEX2,
