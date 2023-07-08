@@ -40,7 +40,7 @@ module full_adder(SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5);
 
 	always@(*)
 	begin
-		if (a > 9 || b > 9)
+		if (a > 9 || b > 9)	// logic OR
 		LEDR[9] = 1;
 		else
 		LEDR[9] = 0;
