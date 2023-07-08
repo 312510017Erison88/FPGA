@@ -1,5 +1,7 @@
-module Counter(rst, en, clk, Q, HEX0, HEX1, HEX2, HEX3);
-	input wire rst, en , clk;
+module Counters(SW, KEY, HEX0, HEX1, HEX2, HEX3);
+	input [1:0] SW;
+	input [0:0] KEY;
+	wire rst, en, clk;
 	reg [3:0] Q1, Q2, Q3, Q4;
     output [6:0] HEX0, HEX1, HEX2, HEX3;
 
@@ -47,11 +49,9 @@ module Counter(rst, en, clk, Q, HEX0, HEX1, HEX2, HEX3);
         else 
             Q4 <= Q3;
 	end
-
-    BCD_to_seven_segment_1 out1 (Q1, HEX0);
-    BCD_to_seven_segment_1 out2 (Q2, HEX1);
-    BCD_to_seven_segment_1 out3 (Q3, HEX2);
-    BCD_to_seven_segment_1 out4 (Q4, HEX3);
-	
-	
+    
+   BCD_to_seven_segment_1 out1 (Q1, HEX0);
+   BCD_to_seven_segment_1 out2 (Q2, HEX1);
+   BCD_to_seven_segment_1 out3 (Q3, HEX2);
+   BCD_to_seven_segment_1 out4 (Q4, HEX3);
 endmodule
