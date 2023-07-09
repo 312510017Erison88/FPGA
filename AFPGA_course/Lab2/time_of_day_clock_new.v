@@ -21,7 +21,7 @@ module time_of_day_clock(
             if(SW[3:0] <= 4'd9)
                 set_hour_0 <= SW[3:0];
             else
-                hour_0 <= 4'd0;
+                set_hour_0 <= 4'd0;
             if((SW[7:4] <= 4'd2) && (SW[3:0] <= 4'd9))
                 set_hour_1 <= SW[7:4];
             else
