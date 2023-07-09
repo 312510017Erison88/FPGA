@@ -1,6 +1,8 @@
 module BCD_to_seven_segment(in, seg);
 input [3:0] in;
 output reg [6:0] seg;
+
+// change the BCD to Seven-Segment LEDs status
 always@(in)
     case(in)
       4'b0000: seg = 7'b1000000;    // 0
