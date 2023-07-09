@@ -72,7 +72,7 @@ module time_of_day_clock(
   BCD_to_seven_segment_1 display_hour_1(temp_hours_1, HEX5);
   BCD_to_seven_segment_1 display_hour_0(temp_hours_0, HEX4);
   // Display minutes on HEX3 and HEX2
-  BCD_to_seven_segment_1 display_minute_1(temp_minutes_1, HEX2);
+  BCD_to_seven_segment_1 display_minute_1(temp_minutes_1, HEX3);
   BCD_to_seven_segment_1 display_minute_0(temp_minutes_0, HEX2);
   // Display seconds on HEX1 and HEX0
   BCD_to_seven_segment_1 display_second_1(temp_seconds_1, HEX1);

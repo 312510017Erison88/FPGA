@@ -44,7 +44,7 @@ module time_of_day_clock(
     // priority: reset > set > count
     wire reset;
     assign reset = KEY[0];
-    alawys@ ( posedge reset, posedge SW[8], posedge clk) begin
+    always@ ( posedge reset, posedge SW[8], posedge clk) begin
         if(reset)begin
             hour_1 <= 4'd0;
             hour_0 <= 4'd0;
@@ -96,7 +96,7 @@ module time_of_day_clock(
     BCD_to_seven_segment_1 display_hour_1(hour_1, HEX5);
     BCD_to_seven_segment_1 display_hour_0(hour_0, HEX4);
     // Display minutes on HEX3 and HEX2
-    BCD_to_seven_segment_1 display_minute_1(minute_1, HEX2);
+    BCD_to_seven_segment_1 display_minute_1(minute_1, HEX3);
     BCD_to_seven_segment_1 display_minute_0(minute_0, HEX2);
     // Display seconds on HEX1 and HEX0
     BCD_to_seven_segment_1 display_second_1(second_1, HEX1);
