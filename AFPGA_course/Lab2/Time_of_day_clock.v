@@ -2,12 +2,12 @@ module time_of_day_clock(
   input [9:0] SW,
   input clk,
   input [1:0] KEY,        // KEY is reset
-  output reg [6:0] HEX0,
-  output reg [6:0] HEX1,
-  output reg [6:0] HEX2,
-  output reg [6:0] HEX3,
-  output reg [6:0] HEX4,
-  output reg [6:0] HEX5
+  output [6:0] HEX0,
+  output [6:0] HEX1,
+  output [6:0] HEX2,
+  output [6:0] HEX3,
+  output [6:0] HEX4,
+  output [6:0] HEX5
 );
 
   reg [5:0] hours;
@@ -53,19 +53,19 @@ module time_of_day_clock(
   always @(hours)
     begin
       temp_hours_1 = hours / 10;
-      temp_hours_2 = hours % 10;
+      temp_hours_0 = hours % 10;
     end
     
     always @(minutes)
     begin
       temp_minutes_1 = minutes / 10;
-      temp_minutes_2 = minutes % 10;
+      temp_minutes_0 = minutes % 10;
     end
     
     always @(seconds)
     begin
       temp_seconds_1 = seconds / 10;
-      temp_seconds_2 = seconds % 10;
+      temp_seconds_0 = seconds % 10;
     end
 
   // Display hours on HEX5 and HEX4

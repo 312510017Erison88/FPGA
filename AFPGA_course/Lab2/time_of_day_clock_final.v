@@ -10,7 +10,7 @@ module time_of_day_clock(
   output [6:0] HEX5
 );
 	
-	 wire CLK_1HZ, CLK_1000HZ;
+	wire CLK_1HZ, CLK_1000HZ;
     clk_divider clk_divider_uut0(CLOCK_50, CLK_1HZ);
     clk_divider clk_divider_uut1(CLOCK_50, CLK_1000HZ);
     defparam clk_divider_uut1.freq = 1000;

@@ -10,7 +10,7 @@ module time_of_day_clock(
   output [6:0] HEX5
 );
 	
-	wire CLK_1HZ, CLK_1000HZ;
+	 wire CLK_1HZ, CLK_1000HZ;
     clk_divider clk_divider_uut0(CLOCK_50, CLK_1HZ);
     clk_divider clk_divider_uut1(CLOCK_50, CLK_1000HZ);
     defparam clk_divider_uut1.freq = 1000;
@@ -30,10 +30,16 @@ module time_of_day_clock(
                 set_hour_0 <= SW[3:0];
             else
                 set_hour_0 <= 4'd0;
-            if((SW[7:4] <= 4'd2) && (SW[3:0] <= 4'd9))
+					 
+            if((SW[7:4] <= 4'd1) && (SW[3:0] <= 4'd9)) begin
                 set_hour_1 <= SW[7:4];
-            else
+				end
+				else if ((SW[7: 4] == 4'd2) && (SW[3: 0] <= 4'd3)) begin
+                set_hour_1 <= SW[7: 4];
+            end
+            else begin
                 set_hour_1 <= 4'd0;
+				end
         end
 
         else begin
@@ -51,7 +57,7 @@ module time_of_day_clock(
     // set the value of next time
     // priority: reset > set > count
     wire reset;
-    assign reset = KEY[0];
+    assign reset = !KEY[0];
     always@( posedge reset, posedge SW[8], posedge SLOW_CLK) begin
         if(reset)begin
             hour_1 <= 4'd0;
@@ -110,3 +116,11 @@ module time_of_day_clock(
     BCD_to_seven_segment display_second_1(second_1, HEX1);
     BCD_to_seven_segment display_second_0(second_0, HEX0);
 endmodule
+
+/*
+問問題
+1. KEY是共楊極嗎
+2. CLK那部份看不太懂 呼叫SLOW_CLK
+3. 下面演匴法部分為什麼是==9
+4. 
+*/
