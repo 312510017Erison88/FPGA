@@ -10,7 +10,7 @@ module time_of_day_clock(
   output [6:0] HEX5
 );
 	 
-	 wire CLK_1HZ, CLK_1000HZ;
+	wire CLK_1HZ, CLK_1000HZ;
     clk_divider clk_divider_uut0(CLOCK_50, CLK_1HZ);
     clk_divider clk_divider_uut1(CLOCK_50, CLK_1000HZ);
     defparam clk_divider_uut1.freq = 1000;
@@ -145,7 +145,6 @@ reminder
 3. 在同一個always下，變數那些數值不能同時附值
 4. 注意CLK_divider的應用
 5. KEY是共陽極
-6.七段顯示器 可以兩個值(十位數和個位數)
-7.下面演算法部分為什麼是==9   這個寫法不好 程式會直接進到下面的if有符合的
-
+6. 七段顯示器 可以兩個值(十位數和個位數)
+7. 下面演算法部分為什麼是==9   這個寫法不好 程式會直接進到下面的if有符合的
 /*
