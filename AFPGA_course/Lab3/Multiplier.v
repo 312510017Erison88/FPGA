@@ -61,49 +61,32 @@ module multiplier(
         end
     end
 
-    reg [7:0] temp_a, temp_b, temp_c, temp_d;
+    reg [7:0] a_or_c, b_or_d;
     reg [15:0] temp_sum;
 
     always@ (*) begin
         if(!KEY[3]) begin
             if(SW[8]) begin
-                temp_a <= a;
-                temp_b <= b;
-                temp_c <= 8'd0;
-                temp_d <= 8'd0;
+                a_or_c <= a;
+                b_or_d <= b;
             end
             else begin
-                temp_a <= 8'd0;
-                temp_b <= 8'd0;
-                temp_c <= c;
-                temp_d <= d;
+                a_or_c <= c;
+                b_or_d <= d;
             end
         end
         else begin
-            temp_sum <= sum;
-            temp_a <= 8'd0;
-            temp_b <= 8'd0;
-            temp_c <= 8'd0;
-            temp_d <= 8'd0;
+            a_or_c <= sum[15:8];
+            b_or_d <= sum[7:0];
         end
     end
 
-
     // Display a or c on HEX3 and HEX2
-    BCD_to_seven_segment display_a1(temp_a[7:4], HEX3);
-	BCD_to_seven_segment display_a0(temp_a[3:0], HEX2);
-    BCD_to_seven_segment display_c1(temp_c[7:4], HEX3);
-	BCD_to_seven_segment display_c0(temp_c[3:0], HEX2);
+    BCD_to_seven_segment display_HEX3(a_or_c[4:7], HEX3);
+	BCD_to_seven_segment display_HEX2(a_or_c[0:3], HEX2);
+   
     // Display b or d on HEX1 and HEX0
-    BCD_to_seven_segment display_b1(temp_b[7:4], HEX1);
-	BCD_to_seven_segment display_b0(temp_b[3:0], HEX0);
-    BCD_to_seven_segment display_d1(temp_b[7:4], HEX1);
-	BCD_to_seven_segment display_d0(temp_b[3:0], HEX0);
-
-    // Display sum on HEX3~HEX0
-    BCD_to_seven_segment display_sum3(temp_sum[15:12], HEX3);
-    BCD_to_seven_segment display_sum2(temp_sum[11:8], HEX2);
-    BCD_to_seven_segment display_sum1(temp_sum[7:4], HEX1);
-    BCD_to_seven_segment display_sum0(temp_sum[3:0], HEX0);
+    BCD_to_seven_segment display_HEX1(b_or_d[4:7], HEX1);
+	BCD_to_seven_segment display_HEX0(b_or_d[0:3], HEX0);
 
 endmodule
