@@ -21,19 +21,19 @@ module time_of_day_clock(
     always@ (KEY[0]) begin
         pre_SW9 <= SW[9];
     end
-    assign set_value = ((!pre_SW9)&&(SW[9]));
+    assign set_value = ((!pre_SW9) && (SW[9]));
 
     wire reset;
 	assign reset = !KEY[0];
-    // priority: reset > write enable > SW[8] > KEY2
-    always@ (*) begin
+    // priority: reset > write enable > SW[8] > KEY[2] (Clock)
+    always@ (reset, set_value, KEY[1], KEY[2], SW[8] ) begin
         // reset
         if (reset) begin
             a <= 8'd0;
             b <= 8'd0;
             c <= 8'd0;
             d <= 8'd0;
-            if(set_value) begin
+            if(set_value && (!KEY[1])) begin
                 if(SW[8]) begin
                     if(!KEY[2]) begin
                         b <= SW[7:0];
@@ -62,17 +62,37 @@ module time_of_day_clock(
             end
         end
     end
-    
-    
-    
 
-    // Display hours on HEX5 and HEX4
-    BCD_to_seven_segment display_hour_1(hour_1, HEX5);
-    BCD_to_seven_segment display_hour_0(hour_0, HEX4);
-    // Display minutes on HEX3 and HEX2
-    BCD_to_seven_segment display_minute_1(minute_1, HEX3);
-    BCD_to_seven_segment display_minute_0(minute_0, HEX2);
-    // Display seconds on HEX1 and HEX0
-    BCD_to_seven_segment display_second_1(second_1, HEX1);
-    BCD_to_seven_segment display_second_0(second_0, HEX0);
+    reg [7:0]temp_a, temp_b, temp_c, temp_d;
+    reg [15:0] temp_sum;
+    always@ (*) begin
+        if(!KEY[3]) begin
+            if(SW[8]) begin
+                temp_a <= a;
+                temp_b <= b;
+            end
+            else begin
+                temp_c <= c;
+                temp_d <= d;
+            end
+        end
+        else begin
+            temp_sum <= sum;
+        end
+    end
+
+
+    // Display a or c on HEX3 and HEX2
+    BCD_to_seven_segment display_a(temp_a, HEX3);
+    BCD_to_seven_segment display_c(temp_c, HEX2);
+    // Display b or d on HEX1 and HEX0
+    BCD_to_seven_segment display_b(temp_b, HEX1);
+    BCD_to_seven_segment display_d(temp_d, HEX0);
+
+    // Display sum on HEX3~HEX0
+    BCD_to_seven_segment display_d(temp_sum[15:12], HEX3);
+    BCD_to_seven_segment display_d(temp_sum[11:8], HEX2);
+    BCD_to_seven_segment display_d(temp_sum[7:4], HEX1);
+    BCD_to_seven_segment display_d(temp_sum[3:0], HEX0);
+
 endmodule
