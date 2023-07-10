@@ -10,7 +10,7 @@ module time_of_day_clock(
   output [6:0] HEX5
 );
 	
-	 wire CLK_1HZ, CLK_1000HZ;
+	wire CLK_1HZ, CLK_1000HZ;
     clk_divider clk_divider_uut0(CLOCK_50, CLK_1HZ);
     clk_divider clk_divider_uut1(CLOCK_50, CLK_1000HZ);
     defparam clk_divider_uut1.freq = 1000;
@@ -122,5 +122,5 @@ endmodule
 1. KEY是共楊極嗎
 2. CLK那部份看不太懂 呼叫SLOW_CLK
 3. 下面演匴法部分為什麼是==9
-4. 
+4. 七段顯示器 可以給兩個值嗎
 */
