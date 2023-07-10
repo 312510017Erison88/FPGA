@@ -83,5 +83,3 @@ endmodule
 
 
 
-// call module(實例化)要放在always外面 
-// 在同一個always下 temp_hours那些數值不能同時附值
