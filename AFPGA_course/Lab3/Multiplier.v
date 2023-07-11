@@ -86,3 +86,5 @@ module multiplier(
 	HEX_to_seven_segment display_HEX0(b_or_d[3:0], HEX0);
 
 endmodule
+
+// pin assignment 要記得!!!!
