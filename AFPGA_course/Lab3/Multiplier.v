@@ -26,7 +26,7 @@ module multiplier(
     wire reset;
 	assign reset = !KEY[0];
     // priority: reset > write enable > SW[8] > KEY[2] (Clock)
-    always@ (reset, negedge KEY[1]) begin
+    always@ (reset, !KEY[1], set_value) begin
         // reset
         if (reset) begin
             a <= 8'd0;
