@@ -16,17 +16,18 @@ module multiplier(
     
     // use register to store pre_SW[9] status
     // important!!
-    wire set_value;
+    wire enable;
     reg pre_SW9;
     always@ (KEY[1]) begin
         pre_SW9 <= SW[9];
     end
-    assign set_value = ((!pre_SW9) && (SW[9]));
+    assign enable = ((!pre_SW9) && (SW[9]));
 
-    wire reset;
+    wire reset, CLK;
 	assign reset = !KEY[0];
+    assign CLK = !KEY[1];
     // priority: reset > write enable > SW[8] > KEY[2] (Clock)
-    always@ (reset, !KEY[1], set_value) begin
+    always@ (posedge reset, posedge CLK, posedge enable) begin
         // reset
         if (reset) begin
             a <= 8'd0;
@@ -36,21 +37,21 @@ module multiplier(
             LEDR[9] <= 0;
         end
         else begin
-            if(set_value) begin
-                if(SW[8]) begin
+            if(enable) begin
+                if(SW[8]) begin     // set a or b
                     if(!KEY[2]) begin
-                        b <= SW[7:0];
-                    end
-                    else begin
                         a <= SW[7:0];
                     end
+                    else begin
+                        b <= SW[7:0];
+                    end
                 end
-                else begin
+                else begin              // set c or d
                     if(!KEY[2]) begin
-                        d <= SW[7:0];
+                        c <= SW[7:0];
                     end
                     else begin
-                        c <= SW[7:0];
+                        d <= SW[7:0];
                     end
                 end
             end
