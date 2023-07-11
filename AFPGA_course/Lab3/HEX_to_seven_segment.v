@@ -1,4 +1,4 @@
-module BCD_to_seven_segment(in, seg);
+module HEX_to_seven_segment(in, seg);
 input [3:0] in;
 output reg [6:0] seg;
 

@@ -71,18 +71,18 @@ module multiplier(
                 b_or_d = d;
             end
         end
-        else begin
+        else begin                  // To display the sum
             a_or_c = sum[15:8];
             b_or_d = sum[7:0];
         end
     end
 
     // Display a or c on HEX3 and HEX2
-    BCD_to_seven_segment display_HEX3(a_or_c[7:4], HEX3);
-	BCD_to_seven_segment display_HEX2(a_or_c[3:0], HEX2);
+    HEX_to_seven_segment display_HEX3(a_or_c[7:4], HEX3);
+	HEX_to_seven_segment display_HEX2(a_or_c[3:0], HEX2);
    
     // Display b or d on HEX1 and HEX0
-    BCD_to_seven_segment display_HEX1(b_or_d[7:4], HEX1);
-	BCD_to_seven_segment display_HEX0(b_or_d[3:0], HEX0);
+    HEX_to_seven_segment display_HEX1(b_or_d[7:4], HEX1);
+	HEX_to_seven_segment display_HEX0(b_or_d[3:0], HEX0);
 
 endmodule
