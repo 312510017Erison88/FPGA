@@ -15,11 +15,11 @@ always@(in) begin
       4'h8: seg = 7'b0000000;    // 8
       4'h9: seg = 7'b0010000;    // 9
       4'hA: seg = 7'b0001000;    // A
-      4'hB: seg = 7'b1100000;    // B
-      4'hC: seg = 7'b0110001;    // C
-      4'hD: seg = 7'b1000010;    // D
-      4'hE: seg = 7'b0110000;    // E
-      4'hF: seg = 7'b0111000;    // F
+      4'hB: seg = 7'b0000011;    // B
+      4'hC: seg = 7'b1000110;    // C
+      4'hD: seg = 7'b0100001;    // D
+      4'hE: seg = 7'b0000110;    // E
+      4'hF: seg = 7'b0001110;    // F
       default: seg = 7'b1111111;    // blank
     endcase
   end

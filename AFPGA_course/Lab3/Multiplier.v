@@ -1,13 +1,11 @@
 module multiplier(
   input [9:0] SW,
   input [3:0] KEY,      // KEY is reset
-  output reg [9:0] LEDR,
+  output reg [9:9] LEDR,
   output [6:0] HEX0,
   output [6:0] HEX1,
   output [6:0] HEX2,
-  output [6:0] HEX3,
-  output [6:0] HEX4,
-  output [6:0] HEX5
+  output [6:0] HEX3
 );
 	 
     reg [7:0] a, b, c, d;
@@ -17,23 +15,21 @@ module multiplier(
     // use register to store pre_SW[9] status
     // important!!
     wire enable;
-    reg pre_SW9;
-    always@ (KEY[1]) begin
-        pre_SW9 <= SW[9];
-    end
-    assign enable = ((!pre_SW9) && (SW[9]));
+    assign enable = SW[9];
 
     wire reset, CLK;
 	assign reset = !KEY[0];
     assign CLK = !KEY[1];
     // priority: reset > write enable > SW[8] > KEY[2] (Clock)
-    always@ (posedge reset, posedge CLK, posedge enable) begin
+    always@ (posedge reset or posedge CLK) begin
         // reset
         if (reset) begin
             a <= 8'd0;
             b <= 8'd0;
             c <= 8'd0;
             d <= 8'd0;
+            sum <= 16'd0;
+            Cout <= 1'd0;
             LEDR[9] <= 0;
         end
         else begin
@@ -56,7 +52,7 @@ module multiplier(
                 end
             end
             else begin
-                {Cout, sum} = a * b + c * d;
+                {Cout, sum} <= (a * b) + (c * d);
                 LEDR[9] <= Cout;
             end
         end
@@ -65,19 +61,19 @@ module multiplier(
     reg [7:0] a_or_c, b_or_d;
 
     always@ (*) begin
-        if(!KEY[3]) begin
+        if(KEY[3]) begin
             if(SW[8]) begin
-                a_or_c <= a;
-                b_or_d <= b;
+                a_or_c = a;
+                b_or_d = b;
             end
             else begin
-                a_or_c <= c;
-                b_or_d <= d;
+                a_or_c = c;
+                b_or_d = d;
             end
         end
         else begin
-            a_or_c <= sum[15:8];
-            b_or_d <= sum[7:0];
+            a_or_c = sum[15:8];
+            b_or_d = sum[7:0];
         end
     end
 
