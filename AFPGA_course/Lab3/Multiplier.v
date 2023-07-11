@@ -12,14 +12,14 @@ module multiplier(
     reg [15:0] sum;
 	reg Cout;
     
-    // use register to store pre_SW[9] status
-    // important!!
+    // SW[9] is enable
     wire enable;
     assign enable = SW[9];
 
     wire reset, CLK;
 	assign reset = !KEY[0];
     assign CLK = !KEY[1];
+
     // priority: reset > write enable > SW[8] > KEY[2] (Clock)
     always@ (posedge reset or posedge CLK) begin
         // reset
@@ -52,7 +52,7 @@ module multiplier(
                 end
             end
             else begin
-                {Cout, sum} <= (a * b) + (c * d);
+                {Cout, sum} <= (a * b) + (c * d);       // main computation
                 LEDR[9] <= Cout;
             end
         end
