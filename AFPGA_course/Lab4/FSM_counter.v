@@ -43,6 +43,8 @@ module FSM_counter(
                     count <= 4'd0;
                 else if (count == 4'd9)
                     count <= 4'd1;
+                else 
+                    count <= count + 2;
                 end
             Sub_one:
                 count <= (count == 4'b0000) ? 4'b1001 : count - 1;
