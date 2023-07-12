@@ -1,4 +1,4 @@
-module counter(
+module FSM_counter(
   input [2:0] SW,
   input [0:0] KEY,      // KEY is CLOCK
   output [6:0] HEX[0],
