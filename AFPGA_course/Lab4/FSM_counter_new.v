@@ -22,8 +22,6 @@ module FSM_counter(
                     Sub_one = 2'b11;
     
     reg [3:0] count;
-    //reg [1:0] cur_state;
-    //reg [1:0] next_state;
    
     // current state machine
     always @(posedge CLK or posedge reset) begin
@@ -31,7 +29,6 @@ module FSM_counter(
             count <= 4'd0;
         end
         else begin
-            //cur_state <= next_state;
             // output logic
             case (in)
             Add_one:
@@ -51,54 +48,6 @@ module FSM_counter(
         endcase
         end
     end
-
-/*
-    // sub-state machine (state transition)
-    always @(cur_state or in) begin   
-        case (cur_state)
-            Add_one: begin
-                if(in == Add_one)
-                    next_state = Add_one;
-                else if(in == Add_two)
-                    next_state = Add_two;
-                else if(in == Sub_one)
-                    next_state = Sub_one;
-                else
-                    next_state = No_change;
-            end
-            Add_two: begin
-                if(in == Add_one)
-                    next_state = Add_one;
-                else if(in == Add_two)
-                    next_state = Add_two;
-                else if(in == Sub_one)
-                    next_state = Sub_one;
-                else
-                    next_state = No_change;
-            end
-            Sub_one: begin
-                if(in == Add_one)
-                    next_state = Add_one;
-                else if(in == Add_two)
-                    next_state = Add_two;
-                else if(in == Sub_one)
-                    next_state = Sub_one;
-                else
-                    next_state = No_change;
-            end
-            No_change: begin
-                if(in == Add_one)
-                    next_state = Add_one;
-                else if(in == Add_two)
-                    next_state = Add_two;
-                else if(in == Sub_one)
-                    next_state = Sub_one;
-                else
-                    next_state = No_change;
-            end
-        endcase
-    end
-*/
 
     // display on HEX0
     BCD_to_seven_segment(count, HEX0);
