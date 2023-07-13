@@ -38,19 +38,17 @@ module memory_blocks(
 
     always@(posedge CLOCK_50) begin
         if(enable) begin
-            enable <= 0;
             address <= SW[4:0];
             data <= SW[7:0];
         end
         else begin
-            enable <= 0;
             address <= count;
             data <= 8'd0;
         end
     end
 
     assign LEDR[0] = SW[9];
-    reg [3:0] data_out;
+    wire [7:0] data_out;
 
     // from ramlpm.v
     ramlpm myramfunction (
