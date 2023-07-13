@@ -23,8 +23,14 @@ module memory_blocks(
     
     
     reg [3:0] count;
-   
-   
+
+    // from ramlpm.v
+    ramlpm (
+	.address(),
+	.clock(),
+	.data(),
+	.wren(),
+	.q());
     // display on HEX0
     
 
