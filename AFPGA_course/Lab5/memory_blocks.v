@@ -8,24 +8,29 @@ module memory_blocks(
   output [6:0] HEX3
 );
 
-    // 除頻
+    // CLK divide
 	wire CLK_1HZ, CLK_1000HZ;
     clk_divider clk_divider_uut0(CLOCK_50, CLK_1HZ);
-    clk_divider clk_divider_uut1(CLOCK_50, CLK_1000HZ);
-    defparam clk_divider_uut1.freq = 1000;
 
     wire SLOW_CLK;
-    assign SLOW_CLK = (KEY[1]) ? CLK_1HZ : CLK_1000HZ;
+    assign SLOW_CLK = CLK_1HZ;
 
-    // Clock
-    wire CLK;
-    assign CLK = !KEY[0];
+    // use register to store pre_SW[8] status
+    // important!!
+    reg pre_SW9;
+    always@ (posedge SLOW_CLK) begin
+        pre_SW9 <= SW[9];
+    end
+
+    wire settime;
+    assign settime = ((!pre_SW8) && (SW[8]));
+	
     
     
     reg [3:0] count;
 
     // from ramlpm.v
-    ramlpm (
+    ramlpm addname (
 	.address(),
 	.clock(),
 	.data(),
