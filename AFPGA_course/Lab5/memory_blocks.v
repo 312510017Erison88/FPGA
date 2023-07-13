@@ -22,21 +22,47 @@ module memory_blocks(
         pre_SW9 <= SW[9];
     end
 
-    wire settime;
-    assign settime = ((!pre_SW8) && (SW[8]));
+    // write enable
+    wire enable;
+
+    // count in RAM
+    reg [4:0] count;
+
+    assign enable = ((!pre_SW9) && (SW[9]));
+
+    always@(posedge SLOW_CLK) begin
+        if(enable) begin
+            count = count + 1;
+        end
+    end
+
+    // 5-bit write address
+    wire address;
+    assign address = SW[4:0];
+
+    // 8-bit write data
+    wire [7:0] data;
+    assign data = SW[7:0];
 	
     
     
     reg [3:0] count;
+    reg [3:0] data_out;
 
     // from ramlpm.v
-    ramlpm addname (
-	.address(),
-	.clock(),
-	.data(),
-	.wren(),
-	.q());
-    // display on HEX0
-    
+    ramlpm myramfunction (
+	.address(address),
+	.clock(CLOCK_50),
+	.data(data),
+	.wren(enable),
+	.q(data_out));
+
+    // Display address
+    HEX_to_seven_segment display_HEX3({3'b000, address[4]}, HEX3);
+	HEX_to_seven_segment display_HEX2(address[3:0], HEX2);
+   
+    // Display read out data
+    HEX_to_seven_segment display_HEX1(data_out[7:4], HEX1);
+	HEX_to_seven_segment display_HEX0(data_out[3:0], HEX0);
 
 endmodule
