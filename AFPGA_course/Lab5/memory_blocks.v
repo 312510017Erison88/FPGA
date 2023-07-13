@@ -1,7 +1,7 @@
 module memory_blocks(
   input [9:0] SW,
   input CLOCK_50,
-  output reg [0:0] LEDR,      
+  output wire [0:0] LEDR,      
   output [6:0] HEX0,
   output [6:0] HEX1,
   output [6:0] HEX2,
@@ -9,13 +9,10 @@ module memory_blocks(
 );
 
     // CLK divide
-	wire CLK_1HZ, CLK_1000HZ;
-    clk_divider clk_divider_uut0(CLOCK_50, CLK_1HZ);
+	wire SLOW_CLK;
+    clk_divider clk_divider_uut0(CLOCK_50, SLOW_CLK);
 
-    wire SLOW_CLK;
-    assign SLOW_CLK = CLK_1HZ;
-
-    // use register to store pre_SW[8] status
+    // use register to store pre_SW[9] status
     // important!!
     reg pre_SW9;
     always@ (posedge SLOW_CLK) begin
@@ -24,29 +21,35 @@ module memory_blocks(
 
     // write enable
     wire enable;
+    assign enable = ((!pre_SW9) && (SW[9]));
 
     // count in RAM
     reg [4:0] count;
 
-    assign enable = ((!pre_SW9) && (SW[9]));
-
+    // count++
     always@(posedge SLOW_CLK) begin
-        if(enable) begin
-            count = count + 1;
-        end
+        count <= count + 1;
     end
 
     // 5-bit write address
-    wire address;
-    assign address = SW[4:0];
-
+    reg [4:0] address;
     // 8-bit write data
-    wire [7:0] data;
-    assign data = SW[7:0];
-	
-    
-    
-    reg [3:0] count;
+    reg [7:0] data;
+
+    always@(posedge CLOCK_50) begin
+        if(enable) begin
+            enable <= 0;
+            address <= SW[4:0];
+            data <= SW[7:0];
+        end
+        else begin
+            enable <= 0;
+            address <= count;
+            data <= 8'd0;
+        end
+    end
+
+    assign LEDR[0] = SW[9];
     reg [3:0] data_out;
 
     // from ramlpm.v
@@ -58,11 +61,11 @@ module memory_blocks(
 	.q(data_out));
 
     // Display address
-    HEX_to_seven_segment display_HEX3({3'b000, address[4]}, HEX3);
-	HEX_to_seven_segment display_HEX2(address[3:0], HEX2);
+    HEX_to_seven_segment display_addr1({3'b000, address[4]}, HEX3);
+	HEX_to_seven_segment display_addr0(address[3:0], HEX2);
    
     // Display read out data
-    HEX_to_seven_segment display_HEX1(data_out[7:4], HEX1);
-	HEX_to_seven_segment display_HEX0(data_out[3:0], HEX0);
+    HEX_to_seven_segment display_data1(data_out[7:4], HEX1);
+	HEX_to_seven_segment display_data0(data_out[3:0], HEX0);
 
 endmodule
