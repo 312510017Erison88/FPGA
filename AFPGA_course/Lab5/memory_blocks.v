@@ -52,11 +52,11 @@ module memory_blocks(
 
     // from ramlpm.v
     ramlpm myramfunction (
-	.address(address),
-	.clock(CLOCK_50),
-	.data(data),
-	.wren(enable),
-	.q(data_out));
+        .address(address),      // 5 bits
+        .clock(CLOCK_50),       
+        .data(data),            // 8 bits
+        .wren(enable),
+        .q(data_out));          // 8 bits
 
     // Display address
     HEX_to_seven_segment display_addr1({3'b000, address[4]}, HEX3);
