@@ -23,6 +23,7 @@ module memory_blocks(
     // write enable
     wire enable;
     assign enable = ((!pre_SW9) && (SW[9]));
+    reg wren;
 
     // count in RAM
     reg [4:0] count;
@@ -51,10 +52,12 @@ module memory_blocks(
         if(enable) begin
             address <= SW[4:0];
             data <= SW[7:0];
+            wren <= 1;
         end
         else begin
             address <= count;
             data <= 8'd0;
+            wren <= 0;
             address_show <= address;
             data_show <= data_out;
         end
@@ -65,7 +68,7 @@ module memory_blocks(
         .address(address),      // 5 bits
         .clock(CLOCK_50),       
         .data(data),            // 8 bits
-        .wren(enable),
+        .wren(wren),
         .q(data_out));          // 8 bits
 
     // Display address
