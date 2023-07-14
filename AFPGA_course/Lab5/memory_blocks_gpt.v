@@ -36,14 +36,20 @@ module memory_blocks(
     // 8-bit write data
     reg [7:0] data;
 
+    // data_out_reg
+    reg [7:0] data_out_reg;
+    always@ (posedge CLOCK_50) begin
+        data_out_reg <= data_out;
+    end
+
     always@(posedge CLOCK_50) begin
         if(enable) begin
             address <= SW[4:0];
-            data <= SW[7:0];
+            myramfunction.data <= SW[7:0];
         end
         else begin
             address <= count;
-            data <= 8'd0;
+            myramfunction.data <= 8'd0;
         end
     end
 
@@ -54,7 +60,7 @@ module memory_blocks(
     ramlpm myramfunction (
         .address(address),      // 5 bits
         .clock(CLOCK_50),       
-        .data(data),            // 8 bits
+        .data(data_out_reg),            // 8 bits
         .wren(enable),
         .q(data_out));          // 8 bits
 
