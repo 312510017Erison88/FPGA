@@ -13,9 +13,8 @@ module memory_blocks(
     clk_divider clk_divider_1HZ(CLOCK_50, SLOW_CLK);
 
     // use register to store pre_SW[9] status
-    // important!!
     reg pre_SW9;
-    always@ (posedge SLOW_CLK) begin
+    always@ (posedge CLOCK_50) begin
         pre_SW9 <= SW[9];
     end
 
