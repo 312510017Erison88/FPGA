@@ -10,7 +10,7 @@ module memory_blocks(
 
     // CLK divide
 	wire SLOW_CLK;
-    clk_divider clk_divider_uut0(CLOCK_50, SLOW_CLK);
+    clk_divider clk_divider_1HZ(CLOCK_50, SLOW_CLK);
 
     // use register to store pre_SW[9] status
     // important!!
@@ -43,7 +43,7 @@ module memory_blocks(
         end
         else begin
             address <= count;
-            data <= 8'd0;
+            //data <= 8'd0;
         end
     end
 

@@ -18,6 +18,21 @@
 // ************************************************************
 
 
+//Copyright (C) 1991-2013 Altera Corporation
+//Your use of Altera Corporation's design tools, logic functions 
+//and other software and tools, and its AMPP partner logic 
+//functions, and any output files from any of the foregoing 
+//(including device programming or simulation files), and any 
+//associated documentation or information are expressly subject 
+//to the terms and conditions of the Altera Program License 
+//Subscription Agreement, Altera MegaCore Function License 
+//Agreement, or other applicable license agreement, including, 
+//without limitation, that your use is for the sole purpose of 
+//programming logic devices manufactured by Altera and sold by 
+//Altera or its authorized distributors.  Please refer to the 
+//applicable agreement for further details.
+
+
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
@@ -30,9 +45,9 @@ module ramlpm (
 
 	input	[4:0]  address;
 	input	  clock;
-	input	[3:0]  data;
+	input	[7:0]  data;
 	input	  wren;
-	output	[3:0]  q;
+	output	[7:0]  q;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
@@ -41,8 +56,8 @@ module ramlpm (
 // synopsys translate_on
 `endif
 
-	wire [3:0] sub_wire0;
-	wire [3:0] q = sub_wire0[3:0];
+	wire [7:0] sub_wire0;
+	wire [7:0] q = sub_wire0[7:0];
 
 	altsyncram	altsyncram_component (
 				.address_a (address),
@@ -72,17 +87,16 @@ module ramlpm (
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
 		altsyncram_component.intended_device_family = "Cyclone V",
-		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
+		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=32*8",
 		altsyncram_component.lpm_type = "altsyncram",
 		altsyncram_component.numwords_a = 32,
 		altsyncram_component.operation_mode = "SINGLE_PORT",
 		altsyncram_component.outdata_aclr_a = "NONE",
 		altsyncram_component.outdata_reg_a = "UNREGISTERED",
 		altsyncram_component.power_up_uninitialized = "FALSE",
-		altsyncram_component.ram_block_type = "M10K",
 		altsyncram_component.read_during_write_mode_port_a = "NEW_DATA_NO_NBE_READ",
 		altsyncram_component.widthad_a = 5,
-		altsyncram_component.width_a = 4,
+		altsyncram_component.width_a = 8,
 		altsyncram_component.width_byteena_a = 1;
 
 
