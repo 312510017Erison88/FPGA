@@ -20,9 +20,10 @@ module memory_blocks(
         pre_SW9 <= SW[9];
     end
 
-    // write enable
     wire enable;
     assign enable = ((!pre_SW9) && (SW[9]));
+
+    // write enable
     reg wren;
 
     // count in RAM
@@ -35,6 +36,7 @@ module memory_blocks(
 
     // 5-bit write address
     reg [4:0] address, address_show;
+
     // 8-bit write data
     reg [7:0] data;
     wire [7:0] data_out;
@@ -42,9 +44,8 @@ module memory_blocks(
 
     // LED show when write
     assign LEDR[0] = SW[9];
-    
 
-
+    // do write else read
     always@(posedge QUICK_CLK) begin
         address_show <= address_show;
         data_show <= data_show;
