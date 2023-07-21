@@ -21,6 +21,8 @@ module processor(
     assign Run = SW[9];
     assign LEDR[9] = Done;
     assign resetn = !KEY[0];
+    assign M_clock = !KEY[1];
+    assign P_clock = !KEY[2];
     
     reg Tstep_Q [1:0];
     reg I [1:0];
