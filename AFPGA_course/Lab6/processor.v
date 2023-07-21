@@ -73,3 +73,16 @@ module dec3to8(W, En, Y);
             Y = Y = 8'b00000000;
     end
 endmodule
+
+module regn(R, Rin, CLOCK_50, Q);
+    parameter n = 8;
+    input [n-1:0] R;
+    input Rin, CLOCK_50;
+    output reg[n-1:0] Q;
+
+    always@ (posedge CLOCK_50)
+        if(Rin)
+            Q <= R;
+        else
+            Q <= Q;
+endmodule
