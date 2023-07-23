@@ -12,8 +12,8 @@ module processor(
 );
     // declare variables
     wire [7:0] DIN;
-    wire Run;
-    reg Done;
+    //wire Run;
+    //reg Done;
     wire resetn;
     reg [7:0] BusWires;
 
@@ -24,7 +24,6 @@ module processor(
     assign M_clock = !KEY[1];
     assign P_clock = !KEY[2];
     
-    reg Tstep_Q [1:0];
     reg I [1:0];
     reg IR [7:0];
     reg Xreg [7:0];
@@ -35,32 +34,36 @@ module processor(
     dec3to8 decX1(IR[4:2], 1'b1, Xreg);
     dec3to8 decX0(IR[7:5], 1'b1, Yreg);
 
-    always@(Tstep_Q, I, Xreg, Yreg)
+    always@(I, Xreg, Yreg)
     begin
-    // specify initail value...
-
-        case(Tstep_Q)
-            2'b00:      // Ry are loaded into Rx
-            begin 
-                BusWires = Yreg;
-                IRin = 1'b1;
-            end
-            2'b01:      // constant Din out is loaded in to Rx
-            case(I)
-
-            endcase
-            2'b10:      // Rx add Ry result is loaded in to Rx
-            case(I) 
-
-            endcase
-            2'b11:      // Rx substrate Ry result is loaded in to Rx
-            case(I)
-
-            endcase
+        case(I)
+            2'b00:                  // Ry are loaded into Rx
+                BusWires <= Yreg;
+            2'b01:                  // constant Din out is loaded in to Rx
+                BusWires <= Din;
+            2'b10:                  // Rx add Ry result is loaded in to Rx
+                BusWires <= Xreg + Yreg;    // Add Xreg and Yreg and store the result in Rx
+            2'b11:                  // Rx substrate Ry result is loaded in to Rx
+                BusWires <= Xreg - Yreg;    // Substrate Yreg from Xreg and store the result in Rx
         endcase
     end
 
-    regn reg_0(BusWires, Rin[0], CLOCK_50, R0);
+    always@ (P_clock, resetn)
+        if(resetn) begin
+            Xreg <= 8'd0;
+            Yreg <= 8'd0;
+            BusWires <= 8'd0;
+            IR <= 8'd0;
+        end
+        else begin
+
+        end
+
+    always@ (M_clock)
+
+
+
+    regn reg_0(BusWires, Rin[0], CLOCK_50, R0); // Rin is not defined
     // ... instantiate other registers and the adder/substactor unit
     // ... define the bus
 
@@ -75,8 +78,8 @@ module processor(
     HEX_to_seven_segment Ry1(Yreg[7:4], HEX1);
     HEX_to_seven_segment Ry0(Yreg[3:0], HEX0);
 
-
 endmodule
+
 
 module upcount(clear, CLOCK_50, Q);
     input clear, CLOCK_50;
@@ -117,6 +120,7 @@ module dec3to8(W, En, Y);
             Y = 8'b00000000;
     end
 endmodule
+
 
 module regn(R, Rin, CLOCK_50, Q);
     parameter n = 8;
