@@ -134,3 +134,6 @@ module regn(R, Rin, CLOCK_50, Q);
         else
             Q <= Q;
 endmodule
+
+
+
