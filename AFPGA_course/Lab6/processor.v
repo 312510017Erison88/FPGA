@@ -26,7 +26,7 @@ module processor(
     
     reg Tstep_Q [1:0];
     reg I [1:0];
-    wire IR [7:0];
+    reg IR [7:0];
     reg Xreg [7:0];
     reg Yreg [7:0];
 
@@ -37,22 +37,23 @@ module processor(
 
     always@(Tstep_Q, I, Xreg, Yreg)
     begin
-    // specify initail value
+    // specify initail value...
 
         case(Tstep_Q)
-            2'b00:      // store DIN in IR in time step0
+            2'b00:      // Ry are loaded into Rx
             begin 
+                BusWires = Yreg;
                 IRin = 1'b1;
             end
-            2'b01:      // define signals in time step1
+            2'b01:      // constant Din out is loaded in to Rx
             case(I)
 
             endcase
-            2'b10:      // define signals in time step2
+            2'b10:      // Rx add Ry result is loaded in to Rx
             case(I) 
 
             endcase
-            2'b11:      // define signals in time step3
+            2'b11:      // Rx substrate Ry result is loaded in to Rx
             case(I)
 
             endcase
@@ -62,6 +63,18 @@ module processor(
     regn reg_0(BusWires, Rin[0], CLOCK_50, R0);
     // ... instantiate other registers and the adder/substactor unit
     // ... define the bus
+
+    // Display value of DIN
+    HEX_to_seven_segment DIN1(DIN[7:4], HEX5);
+    HEX_to_seven_segment DIN0(DIN[3:0], HEX4);
+    // Display value of Rx
+    HEX_to_seven_segment RX1(BusWires[7:4], HEX3);
+    HEX_to_seven_segment Rx0(BusWires[3:0], HEX2);
+
+    // Display value of Ry
+    HEX_to_seven_segment Ry1(Yreg[7:4], HEX1);
+    HEX_to_seven_segment Ry0(Yreg[3:0], HEX0);
+
 
 endmodule
 
