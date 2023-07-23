@@ -32,8 +32,8 @@ module processor(
 
     upcount Tstep(resetn, CLOCK_50, Tstep_Q);
     assign I = IR[1:0];
-    dec3to8 decX(IR[4:2], 1'b1, Xreg);
-    dec3to8 decX(IR[7:5], 1'b1, Yreg);
+    dec3to8 decX1(IR[4:2], 1'b1, Xreg);
+    dec3to8 decX0(IR[7:5], 1'b1, Yreg);
 
     always@(Tstep_Q, I, Xreg, Yreg)
     begin
