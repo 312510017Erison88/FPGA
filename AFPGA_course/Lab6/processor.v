@@ -30,6 +30,7 @@ module processor(
     reg Xreg [7:0];
     reg Yreg [7:0];
 
+    rom myromfunction(.address(), .clock(), .q());  // need to fed the parameter
     upcount Tstep(resetn, CLOCK_50, Tstep_Q);
     assign I = IR[1:0];
     dec3to8 decX1(IR[4:2], 1'b1, Xreg);
