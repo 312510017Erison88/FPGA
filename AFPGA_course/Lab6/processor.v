@@ -16,10 +16,11 @@ module processor(
     //reg Done;
     wire resetn;
     reg [7:0] BusWires;
+    wire M_clock, P_clock;
 
     assign DIN [7:0] = SW[7:0];
-    assign Run = SW[9];
-    assign LEDR[9] = Done;
+    //assign Run = SW[9];
+    //assign LEDR[9] = Done;
     assign resetn = !KEY[0];
     assign M_clock = !KEY[1];
     assign P_clock = !KEY[2];
@@ -63,7 +64,7 @@ module processor(
 
 
 
-    regn reg_0(BusWires, Rin[0], CLOCK_50, R0); // Rin is not defined
+    regn reg_0(BusWires, Rin[0], CLOCK_50, R0); // Rin, R0 are not defined
     // ... instantiate other registers and the adder/substactor unit
     // ... define the bus
 
@@ -96,7 +97,7 @@ module upcount(clear, CLOCK_50, Q);
             Q <= Q + 2'b01;
 endmodule
 
-
+// En is original from Tstep
 module dec3to8(W, En, Y);
     input [2:0] W;
     input En;
