@@ -1,6 +1,6 @@
 module processor(
     //input CLOCK_50,
-    output wire [9:0] LEDR,
+    output wire [7:0] LEDR,
     input [2:0] KEY,      
     output [6:0] HEX0,
     output [6:0] HEX1,
@@ -10,7 +10,6 @@ module processor(
     output [6:0] HEX5
 );
     // declare variables
-    wire [7:0] DIN;
     wire resetn;
     wire M_clock, P_clock;
     reg [7:0] BusWires;
@@ -27,6 +26,7 @@ module processor(
     assign resetn = !KEY[0];
     assign M_clock = !KEY[1];
     assign P_clock = !KEY[2];
+    assign LEDR[7:0] = BusWires[7:0];
     assign I = IR[7:6];
 
     upcount Tstep(resetn, M_clock, Tstep_Q);        // T0-T3 four period
@@ -42,12 +42,11 @@ module processor(
     */
 
     // 5-bit read address
-    reg [4:0] address;
-    reg [7:0] data;
-    rom myromfunction(.address(address), .clock(M_clock), .q(data)); 
-    //assign DIN[7:0] = data[7:0];
-    assign I[7:0] = data[7:0];
-
+    wire [4:0] address;
+    wire [7:0] DIN;
+    rom myromfunction(.address(address), .clock(M_clock), .q(DIN)); 
+    assign IR[7:0] = DIN[7:0];
+   
     
     always@(Tstep_Q or I or Xreg or Yreg)
     begin
@@ -120,6 +119,7 @@ module processor(
     regn reg_5(BusWires, Rin[5], P_clock, R5);
     regn reg_6(BusWires, Rin[6], P_clock, R6);
     regn reg_7(BusWires, Rin[7], P_clock, R7);
+    regn reg_A(BusWires, Ain, P_clock , A);
 
     // alu
     always @(AddSub or A or BusWires)
@@ -130,25 +130,27 @@ module processor(
             Sum = A - BusWires;
     end
     
-    regn reg_G(Sum, Gin, P_clock, DINout);
+    regn reg_G(Sum, Gin, P_clock, G);
 
     always@(*)
     begin
         if(Sel==8'b10000000)
             BusWires = R0;
-        else if(Sel=8'b01000000)
+        else if(Sel==8'b01000000)
             BusWires = R1;
-        else if(Sel=8'b00100000)
+        else if(Sel==8'b00100000)
             BusWires = R2;
-        else if(Sel=8'b00010000)
+        else if(Sel==8'b00010000)
             BusWires = R3;
-        else if(Sel=8'b00001000)
+        else if(Sel==8'b00001000)
             BusWires = R4;
-        else if(Sel=8'b01000100)
+        else if(Sel==8'b00000100)
             BusWires = R5;
-        else if(Sel=8'b01000010)
+        else if(Sel==8'b00000010)
             BusWires = R6;
-        else if(Sel=8'b01000001)
+        else if(Sel==8'b00000001)
+            BusWires = R7;
+        else                        // wierd
             BusWires = R7;
     end
 
@@ -156,11 +158,11 @@ module processor(
     HEX_to_seven_segment DIN1(DIN[7:4], HEX5);
     HEX_to_seven_segment DIN0(DIN[3:0], HEX4);
     // Display value of R0
-    HEX_to_seven_segment RX1(data[7:4], HEX3);
-    HEX_to_seven_segment Rx0(data[3:0], HEX2);
+    HEX_to_seven_segment R01(R0[7:4], HEX3);
+    HEX_to_seven_segment R00(R0[3:0], HEX2);
     // Display value of R1
-    HEX_to_seven_segment Ry1(BusWires[7:4], HEX1);
-    HEX_to_seven_segment Ry0(BusWires[3:0], HEX0);
+    HEX_to_seven_segment R11(R1[7:4], HEX1);
+    HEX_to_seven_segment R10(R1[3:0], HEX0);
 
 endmodule
 
@@ -206,7 +208,7 @@ module regn(R, Rin, P_clock, Q);
     parameter n = 8;
     input [n-1:0] R;
     input Rin, P_clock;
-    output reg[n-1:0] Q;
+    output reg [n-1:0] Q;
 
     always@ (posedge P_clock)
         if(Rin)
