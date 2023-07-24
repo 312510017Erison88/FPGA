@@ -1,6 +1,5 @@
 module processor(
-    input [9:0] SW,
-    input CLOCK_50,
+    //input CLOCK_50,
     output wire [9:0] LEDR,
     input [2:0] KEY,      
     output [6:0] HEX0,
@@ -11,27 +10,30 @@ module processor(
     output [6:0] HEX5
 );
     // declare variables
-    wire [7:0] DIN;
-    //wire Run;
-    //reg Done;
     wire resetn;
     reg [7:0] BusWires;
     wire M_clock, P_clock;
+    wire [7:0] DIN;
 
-    assign DIN [7:0] = SW[7:0];
-    //assign Run = SW[9];
-    //assign LEDR[9] = Done;
     assign resetn = !KEY[0];
     assign M_clock = !KEY[1];
     assign P_clock = !KEY[2];
     
+    // 5-bit read address
+    reg [4:0] address;
+    reg [7:0] dara;
+
+    upcount counter(resetn, M_clock, address);
+    rom myromfunction(.address(address), .clock(M_clock), .q(data)); 
+    assign DIN[7:0] = data[7:0];
+    rom myromfunction(.address(DIN), .clock(P_clock), .q(BusWires)); 
+
+    // declare processor parameter
     reg I [1:0];
     reg IR [7:0];
     reg Xreg [7:0];
     reg Yreg [7:0];
 
-    rom myromfunction(.address(), .clock(), .q());  // need to fed the parameter
-    upcount Tstep(resetn, CLOCK_50, Tstep_Q);
     assign I = IR[1:0];
     dec3to8 decX1(IR[4:2], 1'b1, Xreg);
     dec3to8 decX0(IR[7:5], 1'b1, Yreg);
@@ -62,7 +64,7 @@ module processor(
         end
 
     always@ (M_clock)
-
+    // ...
 
 
     regn reg_0(BusWires, Rin[0], CLOCK_50, R0); // Rin, R0 are not defined
@@ -72,30 +74,25 @@ module processor(
     // Display value of DIN
     HEX_to_seven_segment DIN1(DIN[7:4], HEX5);
     HEX_to_seven_segment DIN0(DIN[3:0], HEX4);
-    // Display value of Rx
-    HEX_to_seven_segment RX1(BusWires[7:4], HEX3);
-    HEX_to_seven_segment Rx0(BusWires[3:0], HEX2);
-
-    // Display value of Ry
-    HEX_to_seven_segment Ry1(Yreg[7:4], HEX1);
-    HEX_to_seven_segment Ry0(Yreg[3:0], HEX0);
+    // Display value of R0
+    HEX_to_seven_segment RX1(data[7:4], HEX3);
+    HEX_to_seven_segment Rx0(data[3:0], HEX2);
+    // Display value of R1
+    HEX_to_seven_segment Ry1(BusWires[7:4], HEX1);
+    HEX_to_seven_segment Ry0(BusWires[3:0], HEX0);
 
 endmodule
 
 
-module upcount(clear, CLOCK_50, Q);
-    input clear, CLOCK_50;
-    output reg [1:0] Q;
+module upcount(clear, M_clock, Q);
+    input clear, M_clock;
+    output reg [4:0] Q;
 
-    // 除頻
-	wire CLK_1HZ;
-    clk_divider clk_1HZ(CLOCK_50, CLK_1HZ);
-
-    always@ (posedge CLK_1HZ)
+    always@ (posedge M_clock)
         if(clear)
-            Q <= 2'b00;
+            Q <= 5'd0;
         else
-            Q <= Q + 2'b01;
+            Q <= Q + 5'd1;
 endmodule
 
 // En is original from Tstep
