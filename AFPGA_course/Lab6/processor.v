@@ -26,7 +26,7 @@ module processor(
     upcount counter(resetn, M_clock, address);
     rom myromfunction(.address(address), .clock(M_clock), .q(data)); 
     assign DIN[7:0] = data[7:0];
-    rom myromfunction(.address(DIN), .clock(P_clock), .q(BusWires)); 
+    //rom myromfunction(.address(DIN), .clock(P_clock), .q(BusWires)); 
 
     // declare processor parameter
     reg I [1:0];
@@ -38,6 +38,7 @@ module processor(
     dec3to8 decX1(IR[4:2], 1'b1, Xreg);
     dec3to8 decX0(IR[7:5], 1'b1, Yreg);
 
+/*
     always@(I, Xreg, Yreg)
     begin
         case(I)
@@ -51,6 +52,7 @@ module processor(
                 BusWires <= Xreg - Yreg;    // Substrate Yreg from Xreg and store the result in Rx
         endcase
     end
+*/
 
     always@ (P_clock, resetn)
         if(resetn) begin
@@ -60,14 +62,20 @@ module processor(
             IR <= 8'd0;
         end
         else begin
-
+            case(I)
+            2'b00:                  // Ry are loaded into Rx
+                BusWires <= Yreg;
+            2'b01:                  // constant Din out is loaded in to Rx
+                BusWires <= DIN;
+            2'b10:                  // Rx add Ry result is loaded in to Rx
+                BusWires <= Xreg + Yreg;    // Add Xreg and Yreg and store the result in Rx
+            2'b11:                  // Rx substrate Ry result is loaded in to Rx
+                BusWires <= Xreg - Yreg;    // Substrate Yreg from Xreg and store the result in Rx
+            endcase
         end
 
-    always@ (M_clock)
-    // ...
 
-
-    regn reg_0(BusWires, Rin[0], CLOCK_50, R0); // Rin, R0 are not defined
+    regn reg_0(BusWires, Rin[0], P_clock, R0); // parameter is wierd!
     // ... instantiate other registers and the adder/substactor unit
     // ... define the bus
 
@@ -121,13 +129,13 @@ module dec3to8(W, En, Y);
 endmodule
 
 
-module regn(R, Rin, CLOCK_50, Q);
+module regn(R, Rin, P_clock, Q);
     parameter n = 8;
     input [n-1:0] R;
-    input Rin, CLOCK_50;
+    input Rin, P_clock;
     output reg[n-1:0] Q;
 
-    always@ (posedge CLOCK_50)
+    always@ (posedge P_clock)
         if(Rin)
             Q <= R;
         else
