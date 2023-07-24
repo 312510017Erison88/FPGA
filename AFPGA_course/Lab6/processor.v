@@ -10,74 +10,147 @@ module processor(
     output [6:0] HEX5
 );
     // declare variables
-    wire resetn;
-    reg [7:0] BusWires;
-    wire M_clock, P_clock;
     wire [7:0] DIN;
+    wire resetn;
+    wire M_clock, P_clock;
+    reg [7:0] BusWires;
+    reg [7:0] Rin, Rout;        // eight 8-bit register's input and output
+    reg [7:0] Sum; 
+    reg IRin, DINout, Ain, Gin, Gout, AddSub;
+    wire [1:0] Tstep_Q;         // 2 different time input
+    wire [1:0] I;               // 2-bit instruction decode
+    wire [7:0] Xreg, Yreg;
+    wire [7:0] R0, R1, R2, R3, R4, R5, R6, R7, A, G;
+    wire [7:0] IR;              // IIXXXYYY
+    wire [7:0] Sel;            // choose which Buswires
 
     assign resetn = !KEY[0];
     assign M_clock = !KEY[1];
     assign P_clock = !KEY[2];
-    
+    assign I = IR[7:6];
+
+    upcount Tstep(resetn, M_clock, Tstep_Q);        // T0-T3 four period
+    dec3to8 decX1(IR[5:3], 1'b1, Xreg);             // choose R0-R7
+    dec3to8 decX0(IR[2:0], 1'b1, Yreg);
+
+    /*    
+    指令列表：
+    00：    mv
+    01:     mvi
+    10:     add
+    11:     sub
+    */
+
     // 5-bit read address
     reg [4:0] address;
-    reg [7:0] dara;
-
-    upcount counter(resetn, M_clock, address);
+    reg [7:0] data;
     rom myromfunction(.address(address), .clock(M_clock), .q(data)); 
-    assign DIN[7:0] = data[7:0];
-    //rom myromfunction(.address(DIN), .clock(P_clock), .q(BusWires)); 
+    //assign DIN[7:0] = data[7:0];
+    assign I[7:0] = data[7:0];
 
-    // declare processor parameter
-    reg I [1:0];
-    reg IR [7:0];
-    reg Xreg [7:0];
-    reg Yreg [7:0];
-
-    assign I = IR[1:0];
-    dec3to8 decX1(IR[4:2], 1'b1, Xreg);
-    dec3to8 decX0(IR[7:5], 1'b1, Yreg);
-
-/*
-    always@(I, Xreg, Yreg)
+    
+    always@(Tstep_Q or I or Xreg or Yreg)
     begin
-        case(I)
-            2'b00:                  // Ry are loaded into Rx
-                BusWires <= Yreg;
-            2'b01:                  // constant Din out is loaded in to Rx
-                BusWires <= Din;
-            2'b10:                  // Rx add Ry result is loaded in to Rx
-                BusWires <= Xreg + Yreg;    // Add Xreg and Yreg and store the result in Rx
-            2'b11:                  // Rx substrate Ry result is loaded in to Rx
-                BusWires <= Xreg - Yreg;    // Substrate Yreg from Xreg and store the result in Rx
+        // specify initial values
+        Ain = 1'b0;
+        Gin = 1'b0;
+        Gout = 1'b0;
+        AddSub = 1'b0;
+        IRin = 1'b0;
+        DINout = 1'b0;
+        Rin = 8'b0;
+        Rout = 8'b0;
+
+        case(Tstep_Q)
+            2'b00:    //store DIN in IR in time step 0
+            begin
+                IRin = 1'b1;
+            end
+            2'b01:    // define signals in time step 1
+                case(I)
+                    2'b00:    // mv Rx,Ry
+                    begin
+                        Rout = Yreg;
+                        Rin = Xreg;
+                    end
+                    2'b01:    // mvi Rx,#D
+                    begin
+                        DINout = 1'b1;
+                        Rin = Xreg;
+                    end
+                    2'b10,2'b11:    // add,sub
+                    begin
+                        Rout = Xreg;
+                        Ain = 1'b1;
+                    end
+                    default: ;        
+                endcase
+            2'b10:    // define signals in time step 2
+                case(I)
+                    2'b10:    // add
+                    begin
+                        Rout = Yreg;
+                        Gin = 1'b1;
+                    end
+                    2'b11:    // sub
+                    begin
+                        Rout = Yreg;
+                        AddSub = 1'b1;
+                        Gin = 1'b1;
+                    end
+                    default: ;    
+                endcase
+            2'b11:    // define signals in time step 3
+                case(I)
+                    2'b10,2'b11:    //add,sub
+                    begin
+                        Gout = 1'b1;
+                        Rin = Xreg;
+                    end
+                    default: ;    
+                endcase
         endcase
     end
-*/
 
-    always@ (P_clock, resetn)
-        if(resetn) begin
-            Xreg <= 8'd0;
-            Yreg <= 8'd0;
-            BusWires <= 8'd0;
-            IR <= 8'd0;
-        end
-        else begin
-            case(I)
-            2'b00:                  // Ry are loaded into Rx
-                BusWires <= Yreg;
-            2'b01:                  // constant Din out is loaded in to Rx
-                BusWires <= DIN;
-            2'b10:                  // Rx add Ry result is loaded in to Rx
-                BusWires <= Xreg + Yreg;    // Add Xreg and Yreg and store the result in Rx
-            2'b11:                  // Rx substrate Ry result is loaded in to Rx
-                BusWires <= Xreg - Yreg;    // Substrate Yreg from Xreg and store the result in Rx
-            endcase
-        end
+    regn reg_0(BusWires, Rin[0], P_clock, R0); 
+    regn reg_1(BusWires, Rin[1], P_clock, R1);
+    regn reg_2(BusWires, Rin[2], P_clock, R2);
+    regn reg_3(BusWires, Rin[3], P_clock, R3);
+    regn reg_4(BusWires, Rin[4], P_clock, R4);
+    regn reg_5(BusWires, Rin[5], P_clock, R5);
+    regn reg_6(BusWires, Rin[6], P_clock, R6);
+    regn reg_7(BusWires, Rin[7], P_clock, R7);
 
+    // alu
+    always @(AddSub or A or BusWires)
+    begin 
+        if(!AddSub)
+            Sum = A + BusWires;
+        else
+            Sum = A - BusWires;
+    end
+    
+    regn reg_G(Sum, Gin, P_clock, DINout);
 
-    regn reg_0(BusWires, Rin[0], P_clock, R0); // parameter is wierd!
-    // ... instantiate other registers and the adder/substactor unit
-    // ... define the bus
+    always@(*)
+    begin
+        if(Sel==8'b10000000)
+            BusWires = R0;
+        else if(Sel=8'b01000000)
+            BusWires = R1;
+        else if(Sel=8'b00100000)
+            BusWires = R2;
+        else if(Sel=8'b00010000)
+            BusWires = R3;
+        else if(Sel=8'b00001000)
+            BusWires = R4;
+        else if(Sel=8'b01000100)
+            BusWires = R5;
+        else if(Sel=8'b01000010)
+            BusWires = R6;
+        else if(Sel=8'b01000001)
+            BusWires = R7;
+    end
 
     // Display value of DIN
     HEX_to_seven_segment DIN1(DIN[7:4], HEX5);
@@ -92,15 +165,15 @@ module processor(
 endmodule
 
 
-module upcount(clear, M_clock, Q);
+module upcount(clear, M_clock, Tstep_Q);
     input clear, M_clock;
-    output reg [4:0] Q;
+    output reg [1:0] Tstep_Q;
 
     always@ (posedge M_clock)
         if(clear)
-            Q <= 5'd0;
+            Tstep_Q <= 2'b0;
         else
-            Q <= Q + 5'd1;
+            Tstep_Q <= Tstep_Q + 1'b1;
 endmodule
 
 // En is original from Tstep
@@ -114,13 +187,13 @@ module dec3to8(W, En, Y);
         if(En == 1'b1) begin
             case(W)
                 3'b000: Y = 8'b10000000;
-                3'b000: Y = 8'b01000000;
-                3'b000: Y = 8'b00100000;
-                3'b000: Y = 8'b00010000;
-                3'b000: Y = 8'b00001000;
-                3'b000: Y = 8'b00000100;
-                3'b000: Y = 8'b00000010;
-                3'b000: Y = 8'b00000001;
+                3'b001: Y = 8'b01000000;
+                3'b010: Y = 8'b00100000;
+                3'b011: Y = 8'b00010000;
+                3'b100: Y = 8'b00001000;
+                3'b101: Y = 8'b00000100;
+                3'b110: Y = 8'b00000010;
+                3'b111: Y = 8'b00000001;
             endcase
         end
         else
