@@ -43,10 +43,10 @@ module processor(
 
     // 5-bit read address
     wire [4:0] address;
-    wire [7:0] DIN;
-    rom myromfunction(.address(address), .clock(M_clock), .q(DIN));
-    count_add mycount_add(resetn, M_clock, address); 
-    //assign IR[7:0] = DIN[7:0];
+    wire [4:0] data;
+    reg [7:0] DIN;
+    rom myromfunction(.address(address), .clock(M_clock), .q(data));
+    count_add mycount_add(resetn, M_clock, address);
    
     
     always@(posedge P_clock)
@@ -60,6 +60,7 @@ module processor(
         DINout <= 1'b0;
         Rin[7:0] <= 8'b0;
         Rout[7:0] <= 8'b0;
+        DIN[7:0] <= data[7:0];
         IR[7:0] <= DIN[7:0];
 
         case(I)
