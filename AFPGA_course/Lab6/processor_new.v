@@ -16,7 +16,7 @@ module processor(
     reg [7:0] Rin, Rout;        // eight 8-bit register's input and output
     reg [7:0] Sum; 
     reg IRin, DINout, Ain, Gin, Gout, AddSub;
-    //wire [1:0] Tstep_Q;         // 2 different time input
+    reg Tstep_Q;               // consider the mvi case
     wire [1:0] I;               // 2-bit instruction decode
     wire [7:0] Xreg, Yreg;
     reg [7:0] R0, R1, R2, R3, R4, R5, R6, R7, A, G;
@@ -28,7 +28,7 @@ module processor(
     assign P_clock = !KEY[2];
     assign LEDR[7:0] = BusWires[7:0];
     assign I = IR[7:6];
-
+    
     dec3to8 decX1(IR[5:3], 1'b1, Xreg);             // choose R0-R7
     dec3to8 decX0(IR[2:0], 1'b1, Yreg);
 
@@ -49,6 +49,7 @@ module processor(
     
     always@(posedge P_clock)
     begin
+        /*
         // specify initial values
         Ain <= 1'b0;
         Gin <= 1'b0;
@@ -58,38 +59,44 @@ module processor(
         DINout <= 1'b0;
         Rin[7:0] <= 8'b0;
         Rout[7:0] <= 8'b0;
+        */
         IR[7:0] <= DIN[7:0];
-
-        case(I)
-            2'b00:   // mv Rx,Ry
-            begin
-                Rout <= Yreg;
-                Rin <= Xreg;
-            end
-            2'b01:    // mvi Rx,#D
-            begin
-                DINout <= 1'b1;
-                Rin <= Xreg;
-            end
-            2'b10:    // add Rx,Ry
-            begin
-                Gin <= 1'b1;
-                Ain <= 1'b1;
-                Rout <= Yreg;
-                Gout <= 1'b1;
-                Rin <= Xreg;
-            end
-            2'b11:    // sub Rx, Ry
-            begin 
-                Gin <= 1'b1;
-                Ain <= 1'b1;
-                Rout <= Yreg;
-                AddSub <= 1'b1;         //sub
-                Gout <= 1'b1;
-                Rin <= Xreg;
-            end
-            default: ;
-        endcase
+        if(Tstep_Q) begin
+            DINout <= 1'b1;
+            Rin <= Xreg;
+            Tstep_Q <= 0;
+        end
+        else begin
+            case(I)
+                2'b00:   // mv Rx,Ry
+                begin
+                    Rout <= Yreg;
+                    Rin <= Xreg;
+                end
+                2'b01:    // mvi Rx,#D
+                begin
+                    Tstep_Q <= 1;
+                end
+                2'b10:    // add Rx,Ry
+                begin
+                    Gin <= 1'b1;
+                    Ain <= 1'b1;
+                    Rout <= Yreg;
+                    Gout <= 1'b1;
+                    Rin <= Xreg;
+                end
+                2'b11:    // sub Rx, Ry
+                begin 
+                    Gin <= 1'b1;
+                    Ain <= 1'b1;
+                    Rout <= Yreg;
+                    AddSub <= 1'b1;         //sub
+                    Gout <= 1'b1;
+                    Rin <= Xreg;
+                end
+                default: ;
+            endcase
+        end
 
         // register banks
         R0 <= Rin[0] ? BusWires : R0;
@@ -108,6 +115,7 @@ module processor(
             Sum = A - BusWires;
         G <= Gin ? Sum : G;
     end
+ 
     
     // define the bus
     assign Sel = {Rout, Gout, DINout};
