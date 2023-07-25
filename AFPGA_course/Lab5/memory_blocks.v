@@ -9,19 +9,21 @@ module memory_blocks(
 );
 
     // CLK divide
-	wire SLOW_CLK, QUICK_CLK;
+	wire SLOW_CLK, QUICK_800HZ, QUICK_8000HZ;
     clk_divider clk_divider_1HZ(CLOCK_50, SLOW_CLK);
-    clk_divider clk_divider_1000HZ(CLOCK_50, QUICK_CLK);
-    defparam clk_divider_1000HZ.freq = 1000;
+    clk_divider clk_divider_1000HZ(CLOCK_50, QUICK_800HZ);
+    clk_divider clk_divider_10000HZ(CLOCK_50, QUICK_8000HZ);
+    defparam clk_divider_800HZ.freq = 800;
+    defparam clk_divider_8000HZ.freq = 8000;
 
-    // use register to store pre_SW[9] status
-    reg pre_SW9;
-    always@ (posedge QUICK_CLK) begin
-        pre_SW9 <= SW[9];
+    // use register to store SW9_open status
+    reg SW9_open;
+    always@(posedge QUICK_800HZ) begin
+        if (SW[9])
+            SW9_open <= ~SW9_open;
+        else
+            SW9_open <= 0;
     end
-
-    wire enable;
-    assign enable = ((!pre_SW9) && (SW[9]));
 
     // write enable
     reg wren;
@@ -46,11 +48,11 @@ module memory_blocks(
     assign LEDR[0] = SW[9];
 
     // do write else read
-    always@(posedge QUICK_CLK) begin
+    always@(posedge QUICK_8000HZ) begin
         address_show <= address_show;
         data_show <= data_show;
 
-        if(enable) begin
+        if(SW9_open) begin
             address <= SW[4:0];
             data <= SW[7:0];
             wren <= 1;
