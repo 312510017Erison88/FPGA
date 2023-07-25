@@ -29,7 +29,7 @@ module processor(
     assign LEDR[7:0] = BusWires[7:0];
     assign I = IR[7:6];
 
-    upcount Tstep(resetn, M_clock, Tstep_Q);        // T0-T3 four period
+    upcount Tstep(resetn, P_clock, Tstep_Q);        // T0-T3 four period
     dec3to8 decX1(IR[5:3], 1'b1, Xreg);             // choose R0-R7
     dec3to8 decX0(IR[2:0], 1'b1, Yreg);
 
@@ -44,7 +44,8 @@ module processor(
     // 5-bit read address
     wire [4:0] address;
     wire [7:0] DIN;
-    rom myromfunction(.address(address), .clock(M_clock), .q(DIN)); 
+    rom myromfunction(.address(address), .clock(M_clock), .q(DIN));
+    count_add mycount_add(resetn, M_clock, address); 
     assign IR[7:0] = DIN[7:0];
    
     
@@ -132,26 +133,31 @@ module processor(
     
     regn reg_G(Sum, Gin, P_clock, G);
 
+    // define the bus
+    assign Sel = {Rout, Gout, DINout};
+
     always@(*)
     begin
-        if(Sel==8'b10000000)
+        if(Sel==10'b1000000000)
             BusWires = R0;
-        else if(Sel==8'b01000000)
+        else if(Sel==10'b0100000000)
             BusWires = R1;
-        else if(Sel==8'b00100000)
+        else if(Sel==10'b0010000000)
             BusWires = R2;
-        else if(Sel==8'b00010000)
+        else if(Sel==10'b0001000000)
             BusWires = R3;
-        else if(Sel==8'b00001000)
+        else if(Sel==10'b0000100000)
             BusWires = R4;
-        else if(Sel==8'b00000100)
+        else if(Sel==10'b0000010000)
             BusWires = R5;
-        else if(Sel==8'b00000010)
+        else if(Sel==10'b0000001000)
             BusWires = R6;
-        else if(Sel==8'b00000001)
+        else if(Sel==10'b0000000100)
             BusWires = R7;
-        else                        // wierd
-            BusWires = R7;
+        else if(Sel==10'b0000000010)
+            BusWires = G;
+        else                        
+            BusWires = DIN;
     end
 
     // Display value of DIN
@@ -167,11 +173,11 @@ module processor(
 endmodule
 
 
-module upcount(clear, M_clock, Tstep_Q);
-    input clear, M_clock;
+module upcount(clear, P_clock, Tstep_Q);
+    input clear, P_clock;
     output reg [1:0] Tstep_Q;
 
-    always@ (posedge M_clock)
+    always@ (posedge P_clock)
         if(clear)
             Tstep_Q <= 2'b0;
         else
@@ -215,6 +221,17 @@ module regn(R, Rin, P_clock, Q);
             Q <= R;
         else
             Q <= Q;
+endmodule
+
+module count_add(resetn, M_clock, Q);
+    input resetn, M_clock;
+    output reg [4:0] Q;
+
+    always@ (posedge M_clock)
+        if(resetn==0)
+            Q <= 5'd0;
+        else
+            Q <= Q + 1'b1;
 endmodule
 
 
