@@ -58,9 +58,9 @@ module processor(
         AddSub <= 1'b0;
         IRin <= 1'b0;
         DINout <= 1'b0;
-        Rin <= 8'b0;
-        Rout <= 8'b0;
-        IR <= DIN;
+        Rin[7:0] <= 8'b0;
+        Rout[7:0] <= 8'b0;
+        IR[7:0] <= DIN[7:0];
 
         case(I)
             2'b00:   // mv Rx,Ry
@@ -75,14 +75,20 @@ module processor(
             end
             2'b10:    // add Rx,Ry
             begin
-                Rout <= Yreg;
                 Gin <= 1'b1;
+                Ain <= 1'b1;
+                Rout <= Yreg;
+                Gout <= 1'b1;
+                Rin <= Xreg;
             end
             2'b11:    // sub Rx, Ry
             begin 
-                Rout <= Yreg;
-                AddSub <= 1'b1;
                 Gin <= 1'b1;
+                Ain <= 1'b1;
+                Rout <= Yreg;
+                AddSub <= 1'b1;         //sub
+                Gout <= 1'b1;
+                Rin <= Xreg;
             end
             default: ;
         endcase
@@ -144,7 +150,7 @@ module processor(
 
 endmodule
 
-
+/*
 module upcount(clear, P_clock, Tstep_Q);
     input clear, P_clock;
     output reg [1:0] Tstep_Q;
@@ -155,6 +161,7 @@ module upcount(clear, P_clock, Tstep_Q);
         else
             Tstep_Q <= Tstep_Q + 1'b1;
 endmodule
+*/
 
 // En is original from Tstep
 module dec3to8(W, En, Y);
