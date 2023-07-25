@@ -1,5 +1,4 @@
 module processor(
-    //input CLOCK_50,
     output wire [7:0] LEDR,
     input [2:0] KEY,      
     output [6:0] HEX0,
@@ -192,7 +191,7 @@ module dec3to8(W, En, Y);
         else
             Y = 8'b00000000;
     end
-endmodule
+endmodule   
 
 
 module regn(R, Rin, P_clock, Q);
