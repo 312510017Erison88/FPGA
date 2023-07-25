@@ -205,7 +205,7 @@ module count_add(resetn, M_clock, Q);
     input resetn, M_clock;
     output reg [4:0] Q;
 
-    always@ (posedge M_clock or resetn)
+    always@ (posedge M_clock or posedge resetn)
         if(resetn)
             Q <= 5'd0;
         else
