@@ -53,9 +53,9 @@ module processor(
     begin
         // specify initial values
         Ain = 1'b0;
-        Gin = 1'b0;
+        Gin = 1'b0;     // Aout
         Gout = 1'b0;
-        AddSub = 1'b0;
+        AddSub = 1'b0;  // 1: Sub  0: Add
         IRin = 1'b0;
         DINout = 1'b0;
         Rin = 8'b0;
@@ -64,7 +64,7 @@ module processor(
         case(Tstep_Q)
             2'b00:    //store DIN in IR in time step 0
             begin
-                IRin = 1'b1;
+                IRin = 1'b1;        // do nothing
             end
             2'b01:    // define signals in time step 1
                 case(I)
@@ -131,7 +131,7 @@ module processor(
             Sum = A - BusWires;
     end
     
-    regn reg_G(Sum, Gin, P_clock, G);
+    regn reg_G(Sum, Gin, P_clock, G);      // change here
 
     // define the bus
     assign Sel = {Rout, Gout, DINout};
