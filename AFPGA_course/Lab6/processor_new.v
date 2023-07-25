@@ -29,7 +29,6 @@ module processor(
     assign LEDR[7:0] = BusWires[7:0];
     assign I = IR[7:6];
 
-    //upcount Tstep(resetn, P_clock, Tstep_Q);        // T0-T3 four period
     dec3to8 decX1(IR[5:3], 1'b1, Xreg);             // choose R0-R7
     dec3to8 decX0(IR[2:0], 1'b1, Yreg);
 
