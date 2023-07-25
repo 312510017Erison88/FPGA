@@ -43,9 +43,8 @@ module processor(
 
     // 5-bit read address
     wire [4:0] address;
-    wire [4:0] data;
-    reg [7:0] DIN;
-    rom myromfunction(.address(address), .clock(M_clock), .q(data));
+    wire [7:0] DIN;
+    rom myromfunction(.address(address), .clock(M_clock), .q(DIN));
     count_add mycount_add(resetn, M_clock, address);
    
     
@@ -60,7 +59,6 @@ module processor(
         DINout <= 1'b0;
         Rin[7:0] <= 8'b0;
         Rout[7:0] <= 8'b0;
-        DIN[7:0] <= data[7:0];
         IR[7:0] <= DIN[7:0];
 
         case(I)
@@ -207,8 +205,8 @@ module count_add(resetn, M_clock, Q);
     input resetn, M_clock;
     output reg [4:0] Q;
 
-    always@ (posedge M_clock)
-        if(resetn==0)
+    always@ (posedge M_clock or resetn)
+        if(resetn)
             Q <= 5'd0;
         else
             Q <= Q + 1'b1;
