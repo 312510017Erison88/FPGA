@@ -11,8 +11,8 @@ module memory_blocks(
     // CLK divide
 	wire SLOW_CLK, QUICK_800HZ, QUICK_8000HZ;
     clk_divider clk_divider_1HZ(CLOCK_50, SLOW_CLK);
-    clk_divider clk_divider_1000HZ(CLOCK_50, QUICK_800HZ);
-    clk_divider clk_divider_10000HZ(CLOCK_50, QUICK_8000HZ);
+    clk_divider clk_divider_800HZ(CLOCK_50, QUICK_800HZ);
+    clk_divider clk_divider_8000HZ(CLOCK_50, QUICK_8000HZ);
     defparam clk_divider_800HZ.freq = 800;
     defparam clk_divider_8000HZ.freq = 8000;
 
