@@ -23,8 +23,7 @@ module processor(
     wire [7:0] memory_q;
     rom myromfunction(.address(address), .clock(M_clock), .q(memory_q));
 
-    ///
-    // processor
+    // processor parameter
     wire [7:0] DIN, R0, R1;
     reg [7:0] BusWires;
     assign DIN = memory_q;
@@ -32,7 +31,7 @@ module processor(
     // instruction decode
     wire [7:0] IR, Xreg, Yreg, Xreg_DIN, Yreg_DIN;
     wire [1:0] I;
-    reg IRin;
+    reg IRin;       // determine DIN loaded into IR or not
 
     assign I = DIN[7:6];
     reg_nbits IR_register(IRin, P_clock, reset, DIN, IR);   // IR <- DIN if IRin = 1
@@ -42,7 +41,7 @@ module processor(
     dec3to8 XXX_DIN (DIN[5:3], 1'b1, Xreg_DIN);
     dec3to8 YYY_DIN (DIN[2:0], 1'b1, Yreg_DIN);
 
-    // registers bus
+    // register's parameter
     reg [7:0] reg_in;
     wire [7:0] reg_matrix [7:0];
     reg [7:0] buswires;
@@ -157,7 +156,6 @@ module processor(
     HEX_to_seven_segment R10(R1[3:0], HEX0);
 
 endmodule
-
 
 module count_addr(reset, clk, Q);
     input reset, clk;
