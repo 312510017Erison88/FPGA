@@ -47,6 +47,10 @@ module processor(
     reg [7:0] reg_matrix [7:0];
     reg [7:0] buswires;
 
+    //wire update_registers;
+    //assign update_registers = (I == 2'b10) || (I == 2'b11); // Add and Sub instructions
+    
+
     // combinational logic
     reg_nbits reg0 (reg_in[0], P_clock, reset, buswires, reg_matrix[0]);  // reg_matrix[0] <- buswires if reg_in[0] = 1
     reg_nbits reg1 (reg_in[1], P_clock, reset, buswires, reg_matrix[1]);
@@ -55,7 +59,8 @@ module processor(
     reg_nbits reg4 (reg_in[4], P_clock, reset, buswires, reg_matrix[4]);
     reg_nbits reg5 (reg_in[5], P_clock, reset, buswires, reg_matrix[5]);
     reg_nbits reg6 (reg_in[6], P_clock, reset, buswires, reg_matrix[6]);
-    reg_nbits reg7 (reg_in[7], P_clock, reset, buswires, reg_matrix[7]);
+    reg_nbits reg7 (reg_in[7], P_clock, reset, buswires, reg_matrix[7]); 
+    
 
     assign R0 = reg_matrix[0];
     assign R1 = reg_matrix[1];
@@ -84,6 +89,7 @@ module processor(
         else
             BusWires <= buswires;
     end
+
 
     // control unit
     wire Tstep;
@@ -159,9 +165,10 @@ module count_addr(reset, clk, Q);
     end
 endmodule
 
-module reg_nbits (IRin, clk, reset, DIN, Q);
+module reg_nbits (IRin, update_registers, clk, reset, DIN, Q);
     parameter N = 8;
     input IRin, clk, reset;
+    input update_registers;
     input [N-1:0] DIN;
     output reg [N-1:0] Q;
     
@@ -173,9 +180,6 @@ module reg_nbits (IRin, clk, reset, DIN, Q);
         else
             Q <= Q;
     end
-    
-
-    
 endmodule
 
 module dec3to8(W, En, Y);
