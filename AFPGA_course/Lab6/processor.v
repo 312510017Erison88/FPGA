@@ -44,7 +44,7 @@ module processor(
 
     // registers from R0~R7
     reg [7:0] reg_in;
-    wire [7:0] reg_matrix [7:0];
+    reg [7:0] reg_matrix [7:0];
     reg [7:0] buswires;
 
     // combinational logic
@@ -59,11 +59,11 @@ module processor(
 
     assign R0 = reg_matrix[0];
     assign R1 = reg_matrix[1];
-
+    
     // Mutiplexer for buswires
     reg RY_out, add, sub;
 
-    always @(*) begin
+    always@(*) begin
         if(RY_out) begin             // I = 00
             buswires = reg_matrix[IR[2:0]];
         end
@@ -89,7 +89,7 @@ module processor(
     wire Tstep;
     upcount myupcount(reset, P_clock, Tstep);
 
-    always @(posegde P_clock) begin
+    always@(*) begin
         IRin = 1'b0;
         reg_in = 8'b0000_0000;
         RY_out = 1'b0;
@@ -164,7 +164,7 @@ module reg_nbits (IRin, clk, reset, DIN, Q);
     input IRin, clk, reset;
     input [N-1:0] DIN;
     output reg [N-1:0] Q;
-
+    
     always @(posedge clk or posedge reset) begin
         if (reset)
             Q <= 0;
@@ -173,6 +173,9 @@ module reg_nbits (IRin, clk, reset, DIN, Q);
         else
             Q <= Q;
     end
+    
+
+    
 endmodule
 
 module dec3to8(W, En, Y);
@@ -199,7 +202,6 @@ module dec3to8(W, En, Y);
     end
 endmodule 
 
-/*
 module upcount(clear, clk, q);
     // 1 clock cycle
     input clear,  clk;
@@ -212,6 +214,6 @@ module upcount(clear, clk, q);
             q <= q + 1'b1;
     end
 endmodule
-*/
+
 
 
