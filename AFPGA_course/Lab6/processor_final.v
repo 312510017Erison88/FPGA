@@ -34,7 +34,7 @@ module processor(
     wire [1:0] I;
     reg IRin;
 
-    assign I = IR[7:6];
+    assign I = DIN[7:6];
     reg_nbits IR_register(IRin, P_clock, reset, DIN, IR);   // IR <- DIN if IRin = 1
 
     dec3to8 XXX (IR[5:3], 1'b1, Xreg);
@@ -65,13 +65,13 @@ module processor(
 
     always @(*) begin
         if(RY_out) begin             // I = 00
-            buswires = reg_matrix[IR[2:0]];
+            buswires = reg_matrix[DIN[2:0]];
         end
         else if(add) begin              // I = 10
             buswires = reg_matrix[DIN[5:3]] + reg_matrix[DIN[2:0]];
         end
         else if(sub) begin              // I = 11
-            buswires = reg_matrix[IR[5:3]] - reg_matrix[IR[2:0]];
+            buswires = reg_matrix[DIN[5:3]] - reg_matrix[DIN[2:0]];
         end
         else begin                      // I = 01
             buswires = DIN;
@@ -89,13 +89,13 @@ module processor(
     wire Tstep;
     upcount myupcount(reset, P_clock, Tstep);
     
-    reg stopflag;
+    reg stopflag;       // To check if I is 10
     always @(*) begin
         IRin = 1'b1;
         reg_in = 8'b0000_0000;
         RY_out = 1'b0;
-        add = (DIN[7:6] == 2'b10);  // IR[7:6]
-        sub = (DIN[7:6] == 2'b11);  // IR[7:6]
+        add = (DIN[7:6] == 2'b10);  
+        sub = (DIN[7:6] == 2'b11);  
         stopflag = (BusWires[7:6] == 2'b01);
         
         case (Tstep)
