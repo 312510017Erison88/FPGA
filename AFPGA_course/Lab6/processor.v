@@ -23,7 +23,6 @@ module processor(
     wire [7:0] memory_q;
     rom myromfunction(.address(address), .clock(M_clock), .q(memory_q));
 
-    ///
     // processor
     wire [7:0] DIN, R0, R1;
     reg [7:0] BusWires;
@@ -44,13 +43,13 @@ module processor(
 
     // registers from R0~R7
     reg [7:0] reg_in;
-    reg [7:0] reg_matrix [7:0];
+    wire [7:0] reg_matrix [7:0];
     reg [7:0] buswires;
 
     //wire update_registers;
     //assign update_registers = (I == 2'b10) || (I == 2'b11); // Add and Sub instructions
     
-
+    
     // combinational logic
     reg_nbits reg0 (reg_in[0], P_clock, reset, buswires, reg_matrix[0]);  // reg_matrix[0] <- buswires if reg_in[0] = 1
     reg_nbits reg1 (reg_in[1], P_clock, reset, buswires, reg_matrix[1]);
@@ -60,7 +59,7 @@ module processor(
     reg_nbits reg5 (reg_in[5], P_clock, reset, buswires, reg_matrix[5]);
     reg_nbits reg6 (reg_in[6], P_clock, reset, buswires, reg_matrix[6]);
     reg_nbits reg7 (reg_in[7], P_clock, reset, buswires, reg_matrix[7]); 
-    
+
 
     assign R0 = reg_matrix[0];
     assign R1 = reg_matrix[1];
@@ -126,18 +125,14 @@ module processor(
                     end
                     2'b10: begin // add Rx, Ry;
                         reg_in = Xreg_DIN;
-                        //add = 1'b1;
                     end
                     default: begin // sub Rx, Ry;
                         reg_in = Xreg_DIN;
-                        //sub = 1'b1;
                     end
                 endcase
             end
         endcase
     end
-
-    ////////////
 
     assign LEDR = BusWires;
 
