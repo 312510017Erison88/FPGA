@@ -165,10 +165,9 @@ module count_addr(reset, clk, Q);
     end
 endmodule
 
-module reg_nbits (IRin, update_registers, clk, reset, DIN, Q);
+module reg_nbits (IRin, clk, reset, DIN, Q);
     parameter N = 8;
     input IRin, clk, reset;
-    input update_registers;
     input [N-1:0] DIN;
     output reg [N-1:0] Q;
     
