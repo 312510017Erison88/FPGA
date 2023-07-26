@@ -42,7 +42,7 @@ module processor(
     dec3to8 XXX_DIN (DIN[5:3], 1'b1, Xreg_DIN);
     dec3to8 YYY_DIN (DIN[2:0], 1'b1, Yreg_DIN);
 
-    // registers from R0~R7
+    // registers bus
     reg [7:0] reg_in;
     wire [7:0] reg_matrix [7:0];
     reg [7:0] buswires;
@@ -82,47 +82,67 @@ module processor(
         if(reset)
             BusWires <= 8'b00000000;
         else
-            BusWires <= buswires;
+            BusWires <= DIN;
     end
 
-    // control unit
+    // time control 
     wire Tstep;
     upcount myupcount(reset, P_clock, Tstep);
-
+    
+    reg stopflag;
     always @(*) begin
-        IRin = 1'b0;
+        IRin = 1'b1;
         reg_in = 8'b0000_0000;
         RY_out = 1'b0;
-        add = (IR[7:6] == 2'b10);  // DIN[7:6]
-        sub = (IR[7:6] == 2'b11);  // DIN[7:6]
+        add = (DIN[7:6] == 2'b10);  // IR[7:6]
+        sub = (DIN[7:6] == 2'b11);  // IR[7:6]
+        stopflag = (BusWires[7:6] == 2'b01);
         
         case (Tstep)
             1'b0: begin             // Tstep = 0 
                 IRin = 1'b1;
-            end
-            default: begin          // Tstep = 1
-                case(I)
+                case(DIN[7:6])
                     2'b00: begin // mv Rx <- Ry;
-                        RY_out = 1'b1;
-                        reg_in = Xreg;
+                        RY_out = (stopflag) ? 1'b0 : 1'b1;
+                        reg_in = (stopflag) ? Xreg : Xreg_DIN;
                     end
                     2'b01: begin // mvi Rx <- #D;
-                        reg_in = Xreg;
+                        reg_in = (stopflag) ? Xreg : 8'd0;
                     end
                     2'b10: begin // add Rx, Ry;
                         reg_in = Xreg_DIN;
-                        //add = 1'b1;
                     end
-                    default: begin // sub Rx, Ry;
+                    2'b11: begin // sub Rx, Ry;
                         reg_in = Xreg_DIN;
-                        //sub = 1'b1;
+                    end
+                    default: begin 
+                        reg_in = 8'd0;
                     end
                 endcase
             end
+        default: begin          // Tstep = 1
+            IRin = 1'b1;
+                case(DIN[7:6])
+                    2'b00: begin // mv Rx <- Ry;
+                        RY_out = (stopflag) ? 1'b0 : 1'b1;
+                        reg_in = (stopflag) ? Xreg : Xreg_DIN;
+                    end
+                    2'b01: begin // mvi Rx <- #D;
+                        reg_in = (stopflag) ? Xreg : 8'd0;
+                    end
+                    2'b10: begin // add Rx, Ry;
+                        reg_in = Xreg_DIN;
+                    end
+                    2'b11: begin // sub Rx, Ry;
+                        reg_in = Xreg_DIN;
+                    end
+                    default: begin 
+                        reg_in = 8'd0;
+                    end
+                endcase  
+            end
         endcase
     end
-
-    ////////////
 
     assign LEDR = BusWires;
 
