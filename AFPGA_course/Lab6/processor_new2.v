@@ -45,9 +45,9 @@ module processor(
     // registers from R0~R7
     reg [7:0] reg_in;
     wire [7:0] reg_matrix [7:0];
-
     reg [7:0] buswires;
 
+    // combinational logic
     reg_nbits reg0 (reg_in[0], P_clock, reset, buswires, reg_matrix[0]);  // reg_matrix[0] <- buswires if reg_in[0] = 1
     reg_nbits reg1 (reg_in[1], P_clock, reset, buswires, reg_matrix[1]);
     reg_nbits reg2 (reg_in[2], P_clock, reset, buswires, reg_matrix[2]);
