@@ -3,9 +3,9 @@
 module testbench_main;
     reg rst_n, clk;
     reg [7:0] din;
-    wire [7:0] buswires, r0, r1;
+    wire [7:0] buswires, R0, R1;
 
-    processor processor_uut(rst_n, clk, din, buswires, r0, r1);
+    simple_processor simple_processor_uut(rst_n, clk, din, buswires, R0, R1);
 
     initial begin
         clk = 0;
