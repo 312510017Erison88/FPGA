@@ -1,7 +1,8 @@
 module simple_processor (reset, P_clock, DIN, BusWires, R0, R1);
     input reset;
     input P_clock;
-    input [7:0] BusWires;
+    input [7:0] DIN;
+    output reg [7:0] BusWires;
     output [7:0] R0, R1;
 
     // instruction decode
